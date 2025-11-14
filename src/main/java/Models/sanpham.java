@@ -65,5 +65,4 @@ public class sanpham {
     public void setGiaban(float giaban) {
         this.giaban = giaban;
     }
-    
 }

@@ -16,7 +16,7 @@ public class loaisanpham {
     public loaisanpham() {
     }
 
-    public loaisanpham(int maloai, String tenloai, String mota, int soluong) {
+    public loaisanpham(int maloai, String tenloai, String mota) {
         this.maloai = maloai;
         this.tenloai = tenloai;
         this.mota = mota;
