@@ -4,6 +4,7 @@
  */
 package DAO;
 
+import Models.goiysanpham;
 import Models.sanpham;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -106,5 +107,24 @@ public class sanphamDAO {
         rs.close();
         ps.close();
         return sp;
+    }
+    
+    public List<goiysanpham> getAllForComboBox() {
+        List<goiysanpham> list = new ArrayList<>();
+        String sql = "SELECT masp, tensp FROM sanpham ORDER BY tensp";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                int id = rs.getInt("masp");
+                String name = rs.getString("tensp");
+                list.add(new goiysanpham(id, name));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
