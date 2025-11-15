@@ -5,6 +5,8 @@
 package DAO;
 
 import Models.nhanvien;
+import Models.nhanvienComboBox;
+import database.dbconnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +20,7 @@ import java.util.List;
  * @author Admin
  */
 public class nhanvienDAO {
-        private Connection conn;
+    private Connection conn;
 
     public nhanvienDAO(Connection conn) {
         this.conn = conn;
@@ -98,5 +100,23 @@ public class nhanvienDAO {
         rs.close();
         ps.close();
         return nv;
+    }
+    
+    public List<nhanvienComboBox> getForComboBox() throws SQLException{
+        List<nhanvienComboBox> list= new ArrayList<>();
+        String sql="select manv, tennv from nhanvien order by tennv";
+        
+        try (PreparedStatement ps= conn.prepareStatement(sql);
+            ResultSet rs=ps.executeQuery()){
+            while(rs.next()){
+                int id= rs.getInt("manv");
+                String name=rs.getString("tennv");
+                list.add(new nhanvienComboBox(id,name));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+                }
+        return list;
     }
 }

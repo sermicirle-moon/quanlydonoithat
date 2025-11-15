@@ -11,10 +11,20 @@ package Models;
 public class goiysanpham {
     private int id;
     private String name;
+    private double dongia;
 
-    public goiysanpham(int id, String name) {
+    public goiysanpham(int id, String name,double dongia) {
         this.id = id;
         this.name = name;
+        this.dongia=dongia;
+    }
+
+    public double getDongia() {
+        return dongia;
+    }
+
+    public void setDongia(double dongia) {
+        this.dongia = dongia;
     }
 
     public int getId() {

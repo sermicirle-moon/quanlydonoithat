@@ -111,7 +111,7 @@ public class sanphamDAO {
     
     public List<goiysanpham> getAllForComboBox() {
         List<goiysanpham> list = new ArrayList<>();
-        String sql = "SELECT masp, tensp FROM sanpham ORDER BY tensp";
+        String sql = "SELECT masp, tensp, giaban FROM sanpham ORDER BY tensp";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -119,7 +119,8 @@ public class sanphamDAO {
             while (rs.next()) {
                 int id = rs.getInt("masp");
                 String name = rs.getString("tensp");
-                list.add(new goiysanpham(id, name));
+                double dongia=rs.getDouble("giaban");
+                list.add(new goiysanpham(id, name, dongia));
             }
 
         } catch (SQLException e) {

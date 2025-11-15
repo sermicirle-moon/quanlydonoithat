@@ -5,6 +5,7 @@
 package DAO;
 
 import Models.nhacungcap;
+import Models.nhacungcapComboBox;
 import database.dbconnection;
 import java.util.List;
 import java.sql.Connection;
@@ -99,5 +100,22 @@ public class nhacungcapDAO {
         rs.close();
         ps.close();
         return ncc;
+    }
+    
+    public List<nhacungcapComboBox> getnccForComboBox() throws SQLException{
+        List<nhacungcapComboBox> listncc = new ArrayList<>();
+        String sql="select mancc, tenncc from nhacungcap order by tenncc";
+        try(PreparedStatement ps=conn.prepareStatement(sql);
+                ResultSet rs=ps.executeQuery()){
+            while(rs.next()){
+                int id=rs.getInt("mancc");
+                String name=rs.getString("tenncc");
+                listncc.add(new nhacungcapComboBox(id,name));
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return listncc;
     }
 }
