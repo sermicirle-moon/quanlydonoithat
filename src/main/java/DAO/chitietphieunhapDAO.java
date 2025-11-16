@@ -30,4 +30,15 @@ public class chitietphieunhapDAO {
         }
         return false;
     }
+    
+    public boolean themChiTietPhieu(int maphieu, int masp, int soluong, double dongia, double thanhtien) throws SQLException {
+        String sql = "INSERT INTO chitietphieu(maphieu, masp, soluong, dongia, thanhtien) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement pst = conn.prepareStatement(sql);
+        pst.setInt(1, maphieu);
+        pst.setInt(2, masp);
+        pst.setInt(3, soluong);
+        pst.setDouble(4, dongia);
+        pst.setDouble(5, thanhtien);
+        return pst.executeUpdate() > 0;
+    }
 }
