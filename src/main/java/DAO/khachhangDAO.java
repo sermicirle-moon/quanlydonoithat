@@ -18,7 +18,7 @@ import java.util.List;
  * @author Admin
  */
 public class khachhangDAO {
-        private Connection conn;
+    private Connection conn;
 
     public khachhangDAO(Connection conn) {
         this.conn = conn;

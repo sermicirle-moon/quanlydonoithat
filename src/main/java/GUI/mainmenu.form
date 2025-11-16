@@ -37,11 +37,22 @@
                                       </Group>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="btnphieunhapxoa" min="-2" max="-2" attributes="0"/>
-                                          <Component id="txtphieunhapsoluong" min="-2" pref="102" max="-2" attributes="0"/>
                                           <Group type="102" attributes="0">
                                               <Component id="cbsanpham" max="32767" attributes="0"/>
                                               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                                          </Group>
+                                          <Group type="102" attributes="0">
+                                              <Group type="103" groupAlignment="0" attributes="0">
+                                                  <Component id="txtphieunhapsoluong" min="-2" pref="102" max="-2" attributes="0"/>
+                                                  <Group type="102" alignment="0" attributes="0">
+                                                      <Component id="btnphieunhapxoa" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                                                      <Component id="btnphieunhapsua" min="-2" max="-2" attributes="0"/>
+                                                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
+                                                      <Component id="btnphieunhapxoabang" min="-2" max="-2" attributes="0"/>
+                                                  </Group>
+                                              </Group>
+                                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -63,9 +74,9 @@
                                               <EmptySpace max="-2" attributes="0"/>
                                               <Component id="txtngaynhap" min="-2" pref="192" max="-2" attributes="0"/>
                                           </Group>
-                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="cbnhanvien" pref="403" max="32767" attributes="0"/>
-                                              <Component id="cbnhacungcap" max="32767" attributes="0"/>
+                                          <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                                              <Component id="cbnhanvien" alignment="0" pref="421" max="32767" attributes="0"/>
+                                              <Component id="cbnhacungcap" alignment="0" max="32767" attributes="0"/>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -123,6 +134,8 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnphieunhapthem" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnphieunhapxoa" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnphieunhapsua" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnphieunhapxoabang" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jScrollPane2" min="-2" pref="325" max="-2" attributes="0"/>
@@ -273,6 +286,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="x&#xf3;a"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnphieunhapxoaActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnphieunhaphuy">
               <Properties>
@@ -308,6 +324,22 @@
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;nhacungcapComboBox&gt;"/>
               </AuxValues>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnphieunhapsua">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="s&#x1eed;a"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnphieunhapsuaActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btnphieunhapxoabang">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="x&#xf3;a b&#x1ea3;ng"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnphieunhapxoabangActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

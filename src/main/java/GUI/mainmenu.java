@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import DAO.chitietphieunhapDAO;
 import DAO.nhacungcapDAO;
 import DAO.nhanvienDAO;
 import DAO.sanphamDAO;
@@ -26,7 +27,8 @@ import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import servicesANDvalidate.validate;
-
+import DAO.chitietphieunhapDAO;
+import servicesANDvalidate.services;
 /**
  *
  * @author Admin
@@ -91,6 +93,26 @@ public class mainmenu extends javax.swing.JFrame {
         }
         AutoCompleteDecorator.decorate(cbnhacungcap);
     }
+    
+    private void Enabled(){
+        txtmaphieunhap.setEnabled(false);
+        txtngaynhap.setEnabled(false);
+        cbnhacungcap.setEnabled(false);
+        cbnhanvien.setEnabled(false);
+    }
+    
+    private void Abled(){
+        txtmaphieunhap.setEnabled(true);
+        txtngaynhap.setEnabled(true);
+        cbnhacungcap.setEnabled(true);
+        cbnhanvien.setEnabled(true);
+    }
+    
+    private void clear(){
+        txtmaphieunhap.setText(null);
+        txtngaynhap.setText(null);
+    }
+        
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -122,6 +144,8 @@ public class mainmenu extends javax.swing.JFrame {
         cbsanpham = new javax.swing.JComboBox<>();
         cbnhanvien = new javax.swing.JComboBox<>();
         cbnhacungcap = new javax.swing.JComboBox<>();
+        btnphieunhapsua = new javax.swing.JButton();
+        btnphieunhapxoabang = new javax.swing.JButton();
         mainPanel = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -193,8 +217,27 @@ public class mainmenu extends javax.swing.JFrame {
         });
 
         btnphieunhapxoa.setText("xóa");
+        btnphieunhapxoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnphieunhapxoaActionPerformed(evt);
+            }
+        });
 
         btnphieunhaphuy.setText("hủy");
+
+        btnphieunhapsua.setText("sửa");
+        btnphieunhapsua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnphieunhapsuaActionPerformed(evt);
+            }
+        });
+
+        btnphieunhapxoabang.setText("xóa bảng");
+        btnphieunhapxoabang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnphieunhapxoabangActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnchitietphieuLayout = new javax.swing.GroupLayout(pnchitietphieu);
         pnchitietphieu.setLayout(pnchitietphieuLayout);
@@ -213,11 +256,19 @@ public class mainmenu extends javax.swing.JFrame {
                                     .addComponent(btnphieunhapthem))
                                 .addGap(18, 18, 18)
                                 .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnphieunhapxoa)
-                                    .addComponent(txtphieunhapsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(pnchitietphieuLayout.createSequentialGroup()
                                         .addComponent(cbsanpham, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGap(14, 14, 14))))
+                                        .addGap(14, 14, 14))
+                                    .addGroup(pnchitietphieuLayout.createSequentialGroup()
+                                        .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(txtphieunhapsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(pnchitietphieuLayout.createSequentialGroup()
+                                                .addComponent(btnphieunhapxoa)
+                                                .addGap(50, 50, 50)
+                                                .addComponent(btnphieunhapsua)
+                                                .addGap(57, 57, 57)
+                                                .addComponent(btnphieunhapxoabang)))
+                                        .addGap(0, 0, Short.MAX_VALUE))))
                             .addComponent(jLabel2)
                             .addGroup(pnchitietphieuLayout.createSequentialGroup()
                                 .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,9 +284,9 @@ public class mainmenu extends javax.swing.JFrame {
                                         .addComponent(jLabel4)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(txtngaynhap, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(cbnhanvien, 0, 403, Short.MAX_VALUE)
-                                        .addComponent(cbnhacungcap, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
+                                    .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(cbnhanvien, javax.swing.GroupLayout.Alignment.LEADING, 0, 421, Short.MAX_VALUE)
+                                        .addComponent(cbnhacungcap, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))))
                     .addGroup(pnchitietphieuLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 747, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -277,7 +328,9 @@ public class mainmenu extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnphieunhapthem)
-                    .addComponent(btnphieunhapxoa))
+                    .addComponent(btnphieunhapxoa)
+                    .addComponent(btnphieunhapsua)
+                    .addComponent(btnphieunhapxoabang))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
@@ -573,6 +626,18 @@ public class mainmenu extends javax.swing.JFrame {
             return;
         }
         int maphieu = Integer.parseInt(maphieuText);
+        chitietphieunhapDAO chitietphieuDAO=new chitietphieunhapDAO(dbconnection.getConnection());
+        try{
+            if(chitietphieuDAO.isMaPhieuExit(maphieu)){
+                JOptionPane.showMessageDialog(this, "Mã phiếu đã tồn tại trong cơ sở dữ liệu!");
+                return;
+            }
+            else{
+                Enabled();
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
         int soluong = Integer.parseInt(soluongText);
         String tensp = sp.getName();
         double dongia = sp.getDongia();
@@ -581,6 +646,18 @@ public class mainmenu extends javax.swing.JFrame {
         DefaultTableModel model=(DefaultTableModel) tbchitietphieunhap.getModel();
         model.addRow(new Object[]{maphieu, tensp, soluong, dongia, tong});
     }//GEN-LAST:event_btnphieunhapthemActionPerformed
+
+    private void btnphieunhapsuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapsuaActionPerformed
+        Abled();
+    }//GEN-LAST:event_btnphieunhapsuaActionPerformed
+
+    private void btnphieunhapxoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapxoaActionPerformed
+        services.removeSelectedRows(tbchitietphieunhap, this);
+    }//GEN-LAST:event_btnphieunhapxoaActionPerformed
+
+    private void btnphieunhapxoabangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapxoabangActionPerformed
+        services.clearTable(tbchitietphieunhap);
+    }//GEN-LAST:event_btnphieunhapxoabangActionPerformed
 
     /**
      * @param args the command line arguments
@@ -630,8 +707,10 @@ public class mainmenu extends javax.swing.JFrame {
     private javax.swing.JButton btnphieunhap;
     private javax.swing.JButton btnphieunhaphuy;
     private javax.swing.JButton btnphieunhapluu;
+    private javax.swing.JButton btnphieunhapsua;
     private javax.swing.JButton btnphieunhapthem;
     private javax.swing.JButton btnphieunhapxoa;
+    private javax.swing.JButton btnphieunhapxoabang;
     private javax.swing.JButton btnphieuxuat;
     private javax.swing.JButton btnsanpham;
     private javax.swing.JButton btntaikhoan;
