@@ -29,7 +29,12 @@ import javax.swing.table.DefaultTableModel;
 import servicesANDvalidate.validate;
 import DAO.chitietphieunhapDAO;
 import DAO.phieunhapDAO;
+import Models.chitietphieu;
 import Models.phieunhap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import servicesANDvalidate.services;
 
 /**
@@ -140,10 +145,9 @@ public class mainmenu extends javax.swing.JFrame {
                 pn.getTenncc(),
                 pn.getTongtien()
             });
-        }
-        
+        } 
     }
-        
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -193,7 +197,7 @@ public class mainmenu extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         panelphieunhap = new javax.swing.JPanel();
         btnthemphieunhap = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnxemphieunhap = new javax.swing.JButton();
         btnxoaphieunhap = new javax.swing.JButton();
         tbphieunhap = new javax.swing.JScrollPane();
         tblphieunhap = new javax.swing.JTable();
@@ -504,9 +508,19 @@ public class mainmenu extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("sửa phiếu nhập hàng");
+        btnxemphieunhap.setText("xem phiếu nhập hàng");
+        btnxemphieunhap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxemphieunhapActionPerformed(evt);
+            }
+        });
 
         btnxoaphieunhap.setText("xóa phiếu nhập hàng");
+        btnxoaphieunhap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxoaphieunhapActionPerformed(evt);
+            }
+        });
 
         tblphieunhap.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -532,7 +546,7 @@ public class mainmenu extends javax.swing.JFrame {
                     .addGroup(panelphieunhapLayout.createSequentialGroup()
                         .addComponent(btnthemphieunhap)
                         .addGap(27, 27, 27)
-                        .addComponent(jButton2)
+                        .addComponent(btnxemphieunhap)
                         .addGap(39, 39, 39)
                         .addComponent(btnxoaphieunhap)
                         .addGap(0, 453, Short.MAX_VALUE)))
@@ -544,7 +558,7 @@ public class mainmenu extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addGroup(panelphieunhapLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnthemphieunhap)
-                    .addComponent(jButton2)
+                    .addComponent(btnxemphieunhap)
                     .addComponent(btnxoaphieunhap))
                 .addGap(18, 18, 18)
                 .addComponent(tbphieunhap, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
@@ -770,6 +784,102 @@ public class mainmenu extends javax.swing.JFrame {
         themchitietphieu.dispose();
     }//GEN-LAST:event_btnphieunhaphuyActionPerformed
 
+    private void btnxemphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxemphieunhapActionPerformed
+        int row = tblphieunhap.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Hãy chọn một phiếu nhập!");
+            return;
+        }
+        // Lấy dữ liệu
+        int maPhieu = Integer.parseInt(tblphieunhap.getValueAt(row, 0).toString());
+        Object dateObj = tblphieunhap.getValueAt(row, 1);
+        String tenNhanVien = tblphieunhap.getValueAt(row, 2).toString();
+        String tenNhaCungCap = tblphieunhap.getValueAt(row, 3).toString();
+        // Mở dialog
+        themchitietphieu.pack();
+        themchitietphieu.setLocationRelativeTo(mainPanel);
+        themchitietphieu.setVisible(true);
+        // Gán mã phiếu
+        txtmaphieunhap.setText(String.valueOf(maPhieu));
+        txtdatechooser.setDate((java.util.Date) dateObj);
+        for (int i = 0; i < cbnhanvien.getItemCount(); i++) {
+            nhanvienComboBox nv = (nhanvienComboBox) cbnhanvien.getItemAt(i);
+            if (nv.getTennv().equals(tenNhanVien)) {
+                cbnhanvien.setSelectedIndex(i);
+                break;
+            }
+        }
+        // ---- Gán nhà cung cấp ----
+        for (int i = 0; i < cbnhacungcap.getItemCount(); i++) {
+            nhacungcapComboBox ncc = (nhacungcapComboBox) cbnhacungcap.getItemAt(i);
+            if (ncc.getName().equals(tenNhaCungCap)) {
+                cbnhacungcap.setSelectedIndex(i);
+                break;
+            }
+        }
+        
+        DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
+        model.setRowCount(0);
+        chitietphieunhapDAO dao= new chitietphieunhapDAO(dbconnection.getConnection());
+        try {
+            List<chitietphieu> list = dao.getByMaPhieu(maPhieu);
+            for (chitietphieu ct : list) {
+                model.addRow(new Object[]{
+                    ct.getMaphieu(),
+                    ct.getMasp(),
+                    ct.getTensp(), 
+                    ct.getSoluong(),
+                    ct.getDongia(),
+                    ct.getThanhtien()
+                });
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tải chi tiết phiếu: " + e.getMessage());
+            e.printStackTrace();
+        }
+        Enabled();
+        cbsanpham.setEditable(false);
+        txtphieunhapsoluong.setEnabled(false);
+        btnphieunhapthem.setEnabled(false);
+        btnphieunhapsua.setEnabled(false);
+        btnphieunhapxoabang.setEnabled(false);
+        btnphieunhapxoa.setEnabled(false);
+        btnphieunhapluu.setEnabled(false);
+    }//GEN-LAST:event_btnxemphieunhapActionPerformed
+
+    private void btnxoaphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaphieunhapActionPerformed
+        int[] selectedRows = tblphieunhap.getSelectedRows();
+        if (selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "Chưa chọn phiếu nào!");
+            return;
+        }
+
+        List<Integer> listMaPhieu = new ArrayList<>();
+        for (int row : selectedRows) {
+            int maPhieu = (int) tblphieunhap.getValueAt(row, 0);
+            listMaPhieu.add(maPhieu);
+        }
+
+        try {
+            phieunhapDAO dao = new phieunhapDAO(dbconnection.getConnection());
+            boolean ok = dao.xoaNhieuPhieuNhap(listMaPhieu);
+            if (ok) {
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                // Load lại bảng phiếu nhập
+            } else {
+                JOptionPane.showMessageDialog(this, "Có phiếu xóa không thành công!");
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xóa phiếu: " + e.getMessage());
+            e.printStackTrace();
+        }
+        try {
+            loadPhieuNhap();
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnxoaphieunhapActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -826,11 +936,11 @@ public class mainmenu extends javax.swing.JFrame {
     private javax.swing.JButton btnsanpham;
     private javax.swing.JButton btntaikhoan;
     private javax.swing.JButton btnthemphieunhap;
+    private javax.swing.JButton btnxemphieunhap;
     private javax.swing.JButton btnxoaphieunhap;
     private javax.swing.JComboBox<nhacungcapComboBox> cbnhacungcap;
     private javax.swing.JComboBox<nhanvienComboBox> cbnhanvien;
     private javax.swing.JComboBox<goiysanpham> cbsanpham;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

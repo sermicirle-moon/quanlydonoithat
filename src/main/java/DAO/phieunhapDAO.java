@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import Models.phieunhap;
 import Models.sanpham;
+import database.dbconnection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -61,9 +62,34 @@ public class phieunhapDAO {
             pn.setTongtien(rs.getFloat("tongtien"));
             list.add(pn);
         }
-
         rs.close();
         st.close();
         return list;
+    }
+    
+    public boolean xoaNhieuPhieuNhap(List<Integer> listMaPhieu) throws SQLException {
+        boolean allDeleted = true;
+        try {
+            conn.setAutoCommit(false); // bắt đầu transaction
+            chitietphieunhapDAO ctDAO = new chitietphieunhapDAO(dbconnection.getConnection());
+            String sql = "DELETE FROM phieunhap WHERE maphieu = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            for (int maPhieu : listMaPhieu) {
+                // Xóa chi tiết trước
+                ctDAO.xoaChiTietPhieu(maPhieu);
+                // Xóa phiếu chính
+                ps.setInt(1, maPhieu);
+                int n = ps.executeUpdate();
+                if (n == 0) allDeleted = false; // nếu không xóa được phiếu nào
+            }
+            conn.commit(); // commit transaction
+            ps.close();
+        } catch (SQLException e) {
+            conn.rollback(); // rollback nếu có lỗi
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+        return allDeleted;
     }
 }

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 public class chitietphieu {
     private int maphieu;
     private int masp;
+    private String tensp;;
     private int soluong;
     private double dongia;
     private double thanhtien;
@@ -20,12 +21,21 @@ public class chitietphieu {
     public chitietphieu() {
     }
 
-    public chitietphieu(int maphieu, int masp, int soluong, double dongia, double thanhtien) {
+    public chitietphieu(int maphieu, int masp, String tensp, int soluong, double dongia, double thanhtien) {
         this.maphieu = maphieu;
         this.masp = masp;
+        this.tensp = tensp;
         this.soluong = soluong;
         this.dongia = dongia;
         this.thanhtien = thanhtien;
+    }
+
+    public String getTensp() {
+        return tensp;
+    }
+
+    public void setTensp(String tensp) {
+        this.tensp = tensp;
     }
 
     public int getMaphieu() {
