@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import servicesANDvalidate.validate;
 import DAO.chitietphieunhapDAO;
 import DAO.phieunhapDAO;
+import Models.phieunhap;
 import servicesANDvalidate.services;
 
 /**
@@ -65,6 +66,8 @@ public class mainmenu extends javax.swing.JFrame {
             new String [] {"Mã phiếu", "Ngày Nhập", "Nhân Viên", "Nhà Cung Cấp", "Tổng Tiền"}
         ));
         txtdatechooser.setDate(new java.util.Date());
+        loadPhieuNhap();
+        
     }
     
     private void loadSanPham(){
@@ -121,6 +124,24 @@ public class mainmenu extends javax.swing.JFrame {
             }
         }
         return tong;
+    }
+    
+    private void loadPhieuNhap() throws SQLException{
+        phieunhapDAO phieunhapdao=new phieunhapDAO(dbconnection.getConnection());
+        List<phieunhap> list = phieunhapdao.getAll();
+        DefaultTableModel model = (DefaultTableModel) tblphieunhap.getModel();
+        model.setRowCount(0);
+
+        for (phieunhap pn : list) {
+            model.addRow(new Object[]{
+                pn.getMaphieu(),
+                pn.getNgaynhap(), 
+                pn.getTennv(),
+                pn.getTenncc(),
+                pn.getTongtien()
+            });
+        }
+        
     }
         
     /**
@@ -233,6 +254,11 @@ public class mainmenu extends javax.swing.JFrame {
         });
 
         btnphieunhaphuy.setText("hủy");
+        btnphieunhaphuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnphieunhaphuyActionPerformed(evt);
+            }
+        });
 
         btnphieunhapsua.setText("sửa");
         btnphieunhapsua.addActionListener(new java.awt.event.ActionListener() {
@@ -271,16 +297,13 @@ public class mainmenu extends javax.swing.JFrame {
                                     .addComponent(btnphieunhapthem))
                                 .addGap(18, 18, 18)
                                 .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtphieunhapsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(pnchitietphieuLayout.createSequentialGroup()
-                                        .addGroup(pnchitietphieuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(txtphieunhapsoluong, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGroup(pnchitietphieuLayout.createSequentialGroup()
-                                                .addComponent(btnphieunhapxoa)
-                                                .addGap(50, 50, 50)
-                                                .addComponent(btnphieunhapsua)
-                                                .addGap(57, 57, 57)
-                                                .addComponent(btnphieunhapxoabang)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(btnphieunhapxoa)
+                                        .addGap(50, 50, 50)
+                                        .addComponent(btnphieunhapsua)
+                                        .addGap(57, 57, 57)
+                                        .addComponent(btnphieunhapxoabang))
                                     .addComponent(cbsanpham, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(jLabel2)
                             .addGroup(pnchitietphieuLayout.createSequentialGroup()
@@ -596,10 +619,22 @@ public class mainmenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btndonviActionPerformed
 
     private void btnthemphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemphieunhapActionPerformed
-        JDialog themchitietphieu = new JDialog();
-        themchitietphieu.getContentPane().add(pnchitietphieu); // thêm panel vào dialog
-        themchitietphieu.pack();
-        themchitietphieu.setLocationRelativeTo(mainPanel); // đặt ở giữa frame
+        if (themchitietphieu == null || !themchitietphieu.isDisplayable()) {
+            themchitietphieu = new JDialog(this, "Thêm phiếu nhập", true);
+            themchitietphieu.getContentPane().add(pnchitietphieu); // panel chứa form chi tiết
+            themchitietphieu.pack();
+            themchitietphieu.setLocationRelativeTo(this);
+            themchitietphieu.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        }
+        
+        Abled();
+        txtmaphieunhap.setText(null);
+        DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
+        model.setRowCount(0);
+        cbnhanvien.setSelectedItem(null);
+        cbnhacungcap.setSelectedItem(null);
+        cbsanpham.setSelectedItem(null);
+        txtphieunhapsoluong.setText(null);
         themchitietphieu.setVisible(true);
     }//GEN-LAST:event_btnthemphieunhapActionPerformed
 
@@ -634,7 +669,6 @@ public class mainmenu extends javax.swing.JFrame {
         }
         
         DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
-        chitietphieunhapDAO dao = new chitietphieunhapDAO(dbconnection.getConnection());
 
         for (int i = 0; i < model.getRowCount(); i++) {
             int masp = (int) model.getValueAt(i, 1);
@@ -643,10 +677,17 @@ public class mainmenu extends javax.swing.JFrame {
             double thanhtien = (double) model.getValueAt(i, 5);
 
             try {
-                dao.themChiTietPhieu(maphieu, masp, soluong, dongia, thanhtien);
+                chitietphieuDAO.themChiTietPhieu(maphieu, masp, soluong, dongia, thanhtien);
             } catch (SQLException ex) {
                 Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+        
+        try {
+            loadPhieuNhap();
+            themchitietphieu.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -701,6 +742,15 @@ public class mainmenu extends javax.swing.JFrame {
         double tong = soluong * dongia;
 
         DefaultTableModel model=(DefaultTableModel) tbchitietphieunhap.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            int maspInTable = (int) model.getValueAt(i, 1);
+            if (maspInTable == masp) {
+                JOptionPane.showMessageDialog(this, 
+                    "Sản phẩm này đã có trong phiếu!", 
+                    "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
         model.addRow(new Object[]{maphieu, masp, tensp, soluong, dongia, tong});
     }//GEN-LAST:event_btnphieunhapthemActionPerformed
 
@@ -715,6 +765,10 @@ public class mainmenu extends javax.swing.JFrame {
     private void btnphieunhapxoabangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapxoabangActionPerformed
         services.clearTable(tbchitietphieunhap);
     }//GEN-LAST:event_btnphieunhapxoabangActionPerformed
+
+    private void btnphieunhaphuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhaphuyActionPerformed
+        themchitietphieu.dispose();
+    }//GEN-LAST:event_btnphieunhaphuyActionPerformed
 
     /**
      * @param args the command line arguments

@@ -44,18 +44,13 @@
                                       </Group>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Group type="102" attributes="0">
-                                              <Group type="103" groupAlignment="0" attributes="0">
-                                                  <Component id="txtphieunhapsoluong" min="-2" pref="102" max="-2" attributes="0"/>
-                                                  <Group type="102" alignment="0" attributes="0">
-                                                      <Component id="btnphieunhapxoa" min="-2" max="-2" attributes="0"/>
-                                                      <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
-                                                      <Component id="btnphieunhapsua" min="-2" max="-2" attributes="0"/>
-                                                      <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
-                                                      <Component id="btnphieunhapxoabang" min="-2" max="-2" attributes="0"/>
-                                                  </Group>
-                                              </Group>
-                                              <EmptySpace max="32767" attributes="0"/>
+                                          <Component id="txtphieunhapsoluong" min="-2" pref="102" max="-2" attributes="0"/>
+                                          <Group type="102" alignment="0" attributes="0">
+                                              <Component id="btnphieunhapxoa" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
+                                              <Component id="btnphieunhapsua" min="-2" max="-2" attributes="0"/>
+                                              <EmptySpace min="-2" pref="57" max="-2" attributes="0"/>
+                                              <Component id="btnphieunhapxoabang" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <Component id="cbsanpham" max="32767" attributes="0"/>
                                       </Group>
@@ -302,6 +297,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="h&#x1ee7;y"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnphieunhaphuyActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbsanpham">
               <Properties>

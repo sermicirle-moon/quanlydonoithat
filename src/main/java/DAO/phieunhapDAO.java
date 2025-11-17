@@ -9,6 +9,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
+import Models.phieunhap;
+import Models.sanpham;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -34,5 +40,30 @@ public class phieunhapDAO {
             int result = pst.executeUpdate();
             return result > 0;
         }
+    }
+    
+    public List<phieunhap> getAll() throws SQLException{
+        List<phieunhap> list = new ArrayList<>();
+        String sql = "SELECT phieunhap.maphieu, phieunhap.ngaynhap, nhanvien.tennv, nhacungcap.tenncc, phieunhap.tongtien "
+           + "FROM phieunhap "
+           + "JOIN nhanvien ON phieunhap.manv = nhanvien.manv "
+           + "JOIN nhacungcap ON phieunhap.mancc = nhacungcap.mancc";
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery(sql);
+
+        while (rs.next()) {
+            phieunhap pn = new phieunhap();
+            pn.setMaphieu(rs.getInt("maphieu"));
+            java.sql.Date sqlDate = rs.getDate("ngaynhap");
+            pn.setNgaynhap(rs.getDate("ngaynhap"));
+            pn.setTennv(rs.getString("tennv"));
+            pn.setTenncc(rs.getString("tenncc"));
+            pn.setTongtien(rs.getFloat("tongtien"));
+            list.add(pn);
+        }
+
+        rs.close();
+        st.close();
+        return list;
     }
 }

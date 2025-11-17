@@ -28,7 +28,7 @@ public class sanphamDAO {
     // 1. Lấy tất cả sản phẩm
     public List<sanpham> getAll() throws SQLException {
         List<sanpham> list = new ArrayList<>();
-        String sql = "SELECT * FROM SanPham";
+        String sql = "SELECT * FROM sanpham";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
 
@@ -49,7 +49,7 @@ public class sanphamDAO {
 
     // 2. Thêm sản phẩm mới
     public boolean insert(sanpham sp) throws SQLException {
-        String sql = "INSERT INTO SanPham(tensp, maloai, soluong, giaban) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO sanpham(tensp, maloai, soluong, giaban) VALUES(?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, sp.getTensp());
         ps.setString(2, sp.getMaloai());
@@ -63,7 +63,7 @@ public class sanphamDAO {
 
     // 3. Cập nhật sản phẩm
     public boolean update(sanpham sp) throws SQLException {
-        String sql = "UPDATE SanPham SET tensp=?, maloai=?, soluong=?, giaban=? WHERE masp=?";
+        String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=? WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, sp.getTensp());
         ps.setString(2, sp.getMaloai());
@@ -78,7 +78,7 @@ public class sanphamDAO {
 
     // 4. Xóa sản phẩm theo masp
     public boolean delete(int masp) throws SQLException {
-        String sql = "DELETE FROM SanPham WHERE masp=?";
+        String sql = "DELETE FROM sanpham WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, masp);
 
@@ -89,7 +89,7 @@ public class sanphamDAO {
 
     // 5. Tìm sản phẩm theo masp
     public sanpham findById(int masp) throws SQLException {
-        String sql = "SELECT * FROM SanPham WHERE masp=?";
+        String sql = "SELECT * FROM sanpham WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, masp);
         ResultSet rs = ps.executeQuery();
