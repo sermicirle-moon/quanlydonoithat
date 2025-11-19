@@ -39,6 +39,8 @@ public class sanphamDAO {
             sp.setMaloai(rs.getString("maloai"));
             sp.setSoluong(rs.getInt("soluong"));
             sp.setGiaban((float) rs.getDouble("giaban"));
+            sp.setGianhap((float) rs.getDouble("gianhap"));
+            sp.setTrangthai(rs.getString("trangthai"));
             list.add(sp);
         }
 
@@ -47,14 +49,16 @@ public class sanphamDAO {
         return list;
     }
 
-    // 2. Thêm sản phẩm mới
+    // 2. Thêm sản phẩm
     public boolean insert(sanpham sp) throws SQLException {
-        String sql = "INSERT INTO sanpham(tensp, maloai, soluong, giaban) VALUES(?,?,?,?)";
+        String sql = "INSERT INTO sanpham(tensp, maloai, soluong, giaban, gianhap, trangthai) VALUES(?,?,?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, sp.getTensp());
         ps.setString(2, sp.getMaloai());
         ps.setInt(3, sp.getSoluong());
-        ps.setDouble(4, sp.getGiaban());
+        ps.setDouble(4, sp.getGianhap());
+        ps.setDouble(5, sp.getGiaban());
+        ps.setString(6, sp.getTrangthai());
 
         int row = ps.executeUpdate();
         ps.close();
@@ -63,13 +67,15 @@ public class sanphamDAO {
 
     // 3. Cập nhật sản phẩm
     public boolean update(sanpham sp) throws SQLException {
-        String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=? WHERE masp=?";
+        String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=?, gianhap=?, trangthai=? WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, sp.getTensp());
         ps.setString(2, sp.getMaloai());
         ps.setInt(3, sp.getSoluong());
-        ps.setDouble(4, sp.getGiaban());
-        ps.setInt(5, sp.getMasp());
+        ps.setDouble(4, sp.getGianhap());
+        ps.setDouble(5, sp.getGiaban());
+        ps.setString(6, sp.getTrangthai());
+        ps.setInt(7, sp.getMasp());
 
         int row = ps.executeUpdate();
         ps.close();
@@ -101,7 +107,9 @@ public class sanphamDAO {
             sp.setTensp(rs.getString("tensp"));
             sp.setMaloai(rs.getString("maloai"));
             sp.setSoluong(rs.getInt("soluong"));
+            sp.setGianhap((float) rs.getDouble("gianhap"));
             sp.setGiaban((float) rs.getDouble("giaban"));
+            sp.setTrangthai(rs.getString("trangthai"));
         }
 
         rs.close();
@@ -111,7 +119,7 @@ public class sanphamDAO {
     
     public List<goiysanpham> getAllForComboBox() {
         List<goiysanpham> list = new ArrayList<>();
-        String sql = "SELECT masp, tensp, giaban FROM sanpham ORDER BY tensp";
+        String sql = "SELECT masp, tensp, gianhap FROM sanpham ORDER BY tensp";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -119,7 +127,7 @@ public class sanphamDAO {
             while (rs.next()) {
                 int id = rs.getInt("masp");
                 String name = rs.getString("tensp");
-                double dongia=rs.getDouble("giaban");
+                double dongia=rs.getDouble("gianhap");
                 list.add(new goiysanpham(id, name, dongia));
             }
 

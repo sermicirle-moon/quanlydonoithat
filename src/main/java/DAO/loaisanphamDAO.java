@@ -102,4 +102,15 @@ public class loaisanphamDAO {
         pst.close();
         return lsp;
     }
+    
+    public boolean isMaLoai(int Maloai) throws SQLException{
+        String sql="select count(*) from loaisanpham where maloai=?";
+        PreparedStatement ps=conn.prepareStatement(sql);
+        ps.setInt(1, Maloai);
+        ResultSet rs=ps.executeQuery();
+        if(rs.next()){
+            return rs.getInt(1)>0;
+        }
+        return false;
+    }
 }

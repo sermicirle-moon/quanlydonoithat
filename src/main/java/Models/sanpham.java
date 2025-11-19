@@ -14,16 +14,36 @@ public class sanpham {
     private String maloai;
     private int soluong;
     private double giaban;
+    private double gianhap;
+    private String trangthai;
 
     public sanpham() {
     }
 
-    public sanpham(int masp, String tensp, String maloai, int soluong, float giaban) {
+    public sanpham(int masp, String tensp, String maloai, int soluong, double giaban, double gianhap, String trangthai) {
         this.masp = masp;
         this.tensp = tensp;
         this.maloai = maloai;
         this.soluong = soluong;
         this.giaban = giaban;
+        this.gianhap = gianhap;
+        this.trangthai = trangthai;
+    }
+
+    public double getGianhap() {
+        return gianhap;
+    }
+
+    public void setGianhap(double gianhap) {
+        this.gianhap = gianhap;
+    }
+
+    public String getTrangthai() {
+        return trangthai;
+    }
+
+    public void setTrangthai(String trangthai) {
+        this.trangthai = trangthai;
     }
 
     public int getMasp() {

@@ -625,7 +625,13 @@ public class mainmenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnphieunhapActionPerformed
 
     private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsanphamActionPerformed
-
+        CardLayout cl = (CardLayout) jPanel3.getLayout();
+        try {
+            jPanel3.add(new quanlysanpham(), "quản lý sản phẩm");
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cl.show(jPanel3, "quản lý sản phẩm");
     }//GEN-LAST:event_btnsanphamActionPerformed
 
     private void btndonviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndonviActionPerformed
