@@ -8,11 +8,13 @@ import DAO.loaisanphamDAO;
 import Models.loaisanpham;
 import database.dbconnection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import servicesANDvalidate.services;
 import servicesANDvalidate.validate;
 
 /**
@@ -101,9 +103,19 @@ public class quanlysanpham extends javax.swing.JPanel {
 
         btnsualoai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnsualoai.setText("Sửa");
+        btnsualoai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnsualoaiActionPerformed(evt);
+            }
+        });
 
         btnxoaloai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnxoaloai.setText("Xóa");
+        btnxoaloai.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxoaloaiActionPerformed(evt);
+            }
+        });
 
         tblloaisp.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -116,6 +128,11 @@ public class quanlysanpham extends javax.swing.JPanel {
                 "Mã loại", "Tên loại", "Mô tả"
             }
         ));
+        tblloaisp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblloaispMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblloaisp);
 
         javax.swing.GroupLayout panelLeftLayout = new javax.swing.GroupLayout(panelLeft);
@@ -247,6 +264,84 @@ public class quanlysanpham extends javax.swing.JPanel {
         }
         
     }//GEN-LAST:event_btnthemloaiActionPerformed
+
+    private void btnsualoaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsualoaiActionPerformed
+        int row=tblloaisp.getSelectedRow();
+        String maloai=txtmaloai.getText().trim();
+        String tenloai=txttenloai.getText().trim();
+        String mota=txtmota.getText().trim();
+        
+        if (maloai.isEmpty() || tenloai.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng không để trống mã loại và tên loại!");
+            return;
+        }
+            if(row == -1){
+            JOptionPane.showMessageDialog(this, "Hãy chọn 1 loại sản phẩm để xem");
+            return;
+        }
+        else{
+            try{
+                loaisanpham sp=new loaisanpham();
+                sp.setMaloai(Integer.parseInt(maloai));
+                sp.setTenloai(tenloai);
+                sp.setMota(mota);
+                
+                loaisanphamDAO dao=new loaisanphamDAO(dbconnection.getConnection());
+                boolean ok=dao.update(sp);
+                if(ok){
+                    JOptionPane.showMessageDialog(this, "Cập nhật thành công");
+                    loadLoaiSP();
+                }
+                else{
+                    JOptionPane.showMessageDialog(this, "Cập nhật thất bại");
+                }
+            }
+            catch(SQLException e){
+                JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_btnsualoaiActionPerformed
+
+    private void tblloaispMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblloaispMouseClicked
+        int row= tblloaisp.getSelectedRow();
+        if(row>=0){
+            txtmaloai.setText(tblloaisp.getValueAt(row, 0).toString());
+            txttenloai.setText(tblloaisp.getValueAt(row, 1).toString());
+            txtmota.setText(tblloaisp.getValueAt(row, 2).toString());  
+        }
+        txtmaloai.setEnabled(false);
+    }//GEN-LAST:event_tblloaispMouseClicked
+
+    private void btnxoaloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaloaiActionPerformed
+        int[] selectedRows= tblloaisp.getSelectedRows();
+        if(selectedRows.length==0){
+            JOptionPane.showMessageDialog(this, "Hãy chọn 1 loại sản phẩm để xóa");
+            return;
+        }
+        List<Integer> listmaloai= new ArrayList<>();
+        for(int row : selectedRows){
+            int maloai=(int) tblloaisp.getValueAt(row, 0);
+            listmaloai.add(maloai);
+        }
+        try{
+            loaisanphamDAO loaidao=new loaisanphamDAO(dbconnection.getConnection());
+            boolean ok=loaidao.xoaNhieuLoaiSanPham(listmaloai);
+            if(ok){
+                JOptionPane.showMessageDialog(this, "Xóa loại sản phẩm thành công");
+            }
+            else{
+                JOptionPane.showMessageDialog(this, "Xóa thất bại");
+            }
+        }catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi xóa loại sản phẩm: " + e.getMessage());
+            e.printStackTrace();
+        }
+        try {
+            loadLoaiSP();
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnxoaloaiActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

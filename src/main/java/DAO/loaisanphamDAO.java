@@ -47,7 +47,7 @@ public class loaisanphamDAO {
 
     // 2. Thêm loại sản phẩm mới
     public boolean insert(loaisanpham lsp) throws SQLException {
-        String sql = "INSERT INTO LoaiSanPham(MaLoai, TenLoai, MoTa) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO loaisanpham(maloai, tenloai, mota) VALUES (?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setInt(1, lsp.getMaloai());
         pst.setString(2, lsp.getTenloai());
@@ -60,12 +60,11 @@ public class loaisanphamDAO {
 
     // 3. Cập nhật loại sản phẩm
     public boolean update(loaisanpham lsp) throws SQLException {
-        String sql = "UPDATE LoaiSanPham SET TenLoai=?, MoTa=? WHERE MaLoai=?";
+        String sql = "UPDATE loaisanpham SET tenloai=?, mota=? WHERE maLoai=?";
         PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setInt(1, lsp.getMaloai());
-        pst.setString(2, lsp.getTenloai());
-        pst.setString(3, lsp.getMota());
-
+        pst.setString(1, lsp.getTenloai());
+        pst.setString(2, lsp.getMota());
+        pst.setInt(3, lsp.getMaloai());
         int row = pst.executeUpdate();
         pst.close();
         return row > 0;
@@ -73,7 +72,7 @@ public class loaisanphamDAO {
 
     // 4. Xóa loại sản phẩm
     public boolean delete(String maLoai) throws SQLException {
-        String sql = "DELETE FROM LoaiSanPham WHERE MaLoai=?";
+        String sql = "DELETE FROM loaiSanPham WHERE maLoai=?";
         PreparedStatement pst = conn.prepareStatement(sql);
         pst.setString(1, maLoai);
 
@@ -112,5 +111,27 @@ public class loaisanphamDAO {
             return rs.getInt(1)>0;
         }
         return false;
+    }
+    
+    public boolean xoaNhieuLoaiSanPham(List<Integer> listmaloai) throws SQLException{
+        boolean AllDeleted=true;
+        try{
+            conn.setAutoCommit(false);
+            String sql = "DELETE FROM loaisanpham WHERE maloai = ?";
+            PreparedStatement ps=conn.prepareStatement(sql);
+            for(int maloai:listmaloai){
+                ps.setInt(1, maloai);
+                int n = ps.executeUpdate();
+                if (n == 0) AllDeleted = false;
+            }
+            conn.commit(); // commit transaction
+            ps.close();
+        } catch (SQLException e) {
+            conn.rollback(); // rollback nếu có lỗi
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+        return AllDeleted;
     }
 }
