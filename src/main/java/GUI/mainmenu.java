@@ -31,6 +31,7 @@ import DAO.chitietphieunhapDAO;
 import DAO.phieunhapDAO;
 import Models.chitietphieu;
 import Models.phieunhap;
+import java.awt.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
