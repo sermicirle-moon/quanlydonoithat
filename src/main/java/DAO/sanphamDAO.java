@@ -36,7 +36,7 @@ public class sanphamDAO {
             sanpham sp = new sanpham();
             sp.setMasp(rs.getInt("masp"));
             sp.setTensp(rs.getString("tensp"));
-            sp.setMaloai(rs.getString("maloai"));
+            sp.setMaloai(rs.getInt("maloai"));
             sp.setSoluong(rs.getInt("soluong"));
             sp.setGiaban((float) rs.getDouble("giaban"));
             sp.setGianhap((float) rs.getDouble("gianhap"));
@@ -51,15 +51,14 @@ public class sanphamDAO {
 
     // 2. Thêm sản phẩm
     public boolean insert(sanpham sp) throws SQLException {
-        String sql = "INSERT INTO sanpham(tensp, maloai, soluong, giaban, gianhap, trangthai) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO sanpham(masp, tensp, maloai, soluong, giaban, gianhap) VALUES(?,?,?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, sp.getTensp());
-        ps.setString(2, sp.getMaloai());
-        ps.setInt(3, sp.getSoluong());
-        ps.setDouble(4, sp.getGianhap());
-        ps.setDouble(5, sp.getGiaban());
-        ps.setString(6, sp.getTrangthai());
-
+        ps.setInt(1,sp.getMasp());
+        ps.setString(2, sp.getTensp());
+        ps.setInt(3, sp.getMaloai());
+        ps.setInt(4, sp.getSoluong());
+        ps.setDouble(5, sp.getGianhap());
+        ps.setDouble(6, sp.getGiaban());
         int row = ps.executeUpdate();
         ps.close();
         return row > 0;
@@ -70,7 +69,7 @@ public class sanphamDAO {
         String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=?, gianhap=?, trangthai=? WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, sp.getTensp());
-        ps.setString(2, sp.getMaloai());
+        ps.setInt(2, sp.getMaloai());
         ps.setInt(3, sp.getSoluong());
         ps.setDouble(4, sp.getGianhap());
         ps.setDouble(5, sp.getGiaban());
@@ -105,7 +104,7 @@ public class sanphamDAO {
             sp = new sanpham();
             sp.setMasp(rs.getInt("masp"));
             sp.setTensp(rs.getString("tensp"));
-            sp.setMaloai(rs.getString("maloai"));
+            sp.setMaloai(rs.getInt("maloai"));
             sp.setSoluong(rs.getInt("soluong"));
             sp.setGianhap((float) rs.getDouble("gianhap"));
             sp.setGiaban((float) rs.getDouble("giaban"));
@@ -135,5 +134,20 @@ public class sanphamDAO {
             e.printStackTrace();
         }
         return list;
+    }
+    
+    public boolean isMaspExist(int masp) {
+        String sql = "SELECT COUNT(*) AS count FROM sanpham WHERE masp = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, masp);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("count") > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

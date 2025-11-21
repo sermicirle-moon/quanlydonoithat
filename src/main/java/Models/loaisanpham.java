@@ -45,6 +45,10 @@ public class loaisanpham {
     public void setMota(String mota) {
         this.mota = mota;
     }
-
+    
+    @Override
+    public String toString(){
+        return tenloai;
+    }
        
 }

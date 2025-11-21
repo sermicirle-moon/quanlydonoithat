@@ -11,7 +11,7 @@ package Models;
 public class sanpham {
     private int masp;
     private String tensp;
-    private String maloai;
+    private int maloai;
     private int soluong;
     private double giaban;
     private double gianhap;
@@ -20,7 +20,7 @@ public class sanpham {
     public sanpham() {
     }
 
-    public sanpham(int masp, String tensp, String maloai, int soluong, double giaban, double gianhap, String trangthai) {
+    public sanpham(int masp, String tensp, int maloai, int soluong, double giaban, double gianhap, String trangthai) {
         this.masp = masp;
         this.tensp = tensp;
         this.maloai = maloai;
@@ -28,6 +28,46 @@ public class sanpham {
         this.giaban = giaban;
         this.gianhap = gianhap;
         this.trangthai = trangthai;
+    }
+
+    public int getMasp() {
+        return masp;
+    }
+
+    public void setMasp(int masp) {
+        this.masp = masp;
+    }
+
+    public String getTensp() {
+        return tensp;
+    }
+
+    public void setTensp(String tensp) {
+        this.tensp = tensp;
+    }
+
+    public int getMaloai() {
+        return maloai;
+    }
+
+    public void setMaloai(int maloai) {
+        this.maloai = maloai;
+    }
+
+    public int getSoluong() {
+        return soluong;
+    }
+
+    public void setSoluong(int soluong) {
+        this.soluong = soluong;
+    }
+
+    public double getGiaban() {
+        return giaban;
+    }
+
+    public void setGiaban(double giaban) {
+        this.giaban = giaban;
     }
 
     public double getGianhap() {
@@ -45,44 +85,5 @@ public class sanpham {
     public void setTrangthai(String trangthai) {
         this.trangthai = trangthai;
     }
-
-    public int getMasp() {
-        return masp;
-    }
-
-    public String getTensp() {
-        return tensp;
-    }
-
-    public String getMaloai() {
-        return maloai;
-    }
-
-    public int getSoluong() {
-        return soluong;
-    }
-
-    public double getGiaban() {
-        return giaban;
-    }
-
-    public void setMasp(int masp) {
-        this.masp = masp;
-    }
-
-    public void setTensp(String tensp) {
-        this.tensp = tensp;
-    }
-
-    public void setMaloai(String maloai) {
-        this.maloai = maloai;
-    }
-
-    public void setSoluong(int soluong) {
-        this.soluong = soluong;
-    }
-
-    public void setGiaban(float giaban) {
-        this.giaban = giaban;
-    }
+    
 }

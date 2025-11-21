@@ -315,8 +315,8 @@
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                                   <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txtmaloaisp" min="-2" pref="97" max="-2" attributes="0"/>
-                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Component id="cbloaisp" min="-2" pref="123" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="txtsoluongton" min="-2" pref="80" max="-2" attributes="0"/>
@@ -342,8 +342,8 @@
                       <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtmasp" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txttensp" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtmaloaisp" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtsoluongton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbloaisp" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -400,7 +400,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="14" style="0"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="M&#xe3; lo&#x1ea1;i:"/>
+            <Property name="text" type="java.lang.String" value="T&#xea;n lo&#x1ea1;i:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel9">
@@ -433,8 +433,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txttenspActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JTextField" name="txtmaloaisp">
         </Component>
         <Component class="javax.swing.JTextField" name="txtsoluongton">
         </Component>
@@ -547,6 +545,16 @@
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JComboBox" name="cbloaisp">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="0"/>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;loaisanpham&gt;"/>
+          </AuxValues>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

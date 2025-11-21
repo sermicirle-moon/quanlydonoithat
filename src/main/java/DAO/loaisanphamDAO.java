@@ -27,15 +27,15 @@ public class loaisanphamDAO {
     // 1. Lấy tất cả loại sản phẩm
     public List<loaisanpham> getAll() throws SQLException {
         List<loaisanpham> list = new ArrayList<>();
-        String sql = "SELECT * FROM LoaiSanPham";
+        String sql = "SELECT * FROM loaisanpham";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
 
         while (rs.next()) {
             loaisanpham lsp = new loaisanpham(
-                rs.getInt("MaLoai"),
-                rs.getString("TenLoai"),
-                rs.getString("MoTa")
+                rs.getInt("maloai"),
+                rs.getString("tenloai"),
+                rs.getString("mota")
             );
             list.add(lsp);
         }

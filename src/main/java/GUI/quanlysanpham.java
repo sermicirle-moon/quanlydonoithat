@@ -5,7 +5,10 @@
 package GUI;
 
 import DAO.loaisanphamDAO;
+import DAO.sanphamDAO;
+import Models.goiysanpham;
 import Models.loaisanpham;
+import Models.sanpham;
 import database.dbconnection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import servicesANDvalidate.services;
 import servicesANDvalidate.validate;
 
@@ -32,8 +36,26 @@ public class quanlysanpham extends javax.swing.JPanel {
             new Object[][] {},
             new String [] {"Mã loại", "Tên loại", "Mô tả"}
         ));
+        cbloaisp.setSelectedItem(null);
         loadLoaiSP();
-        
+        cbloaisp.setEditable(true);
+        cbtimkiemsp.setEditable(true);
+        cbloaiSP();
+        tblsanpham.setModel(new DefaultTableModel(
+            new Object[][] {},
+            new String [] {"Mã sản phẩm", "Tên sản phẩm", "Mã loại sản phẩm", "Số lượng", "Giá bán", "Giá nhập", "Trạng thái"}
+        ));
+        loadSP();
+    }
+    
+    private void cbloaiSP() throws SQLException{
+        cbloaisp.removeAllItems();
+        loaisanphamDAO dao=new loaisanphamDAO(dbconnection.getConnection());
+        List<loaisanpham> listcb= dao.getAll();
+        for(loaisanpham loai:listcb){
+            cbloaisp.addItem(loai);
+        }
+        AutoCompleteDecorator.decorate(cbloaisp);
     }
     
     private void loadLoaiSP() throws SQLException {
@@ -48,6 +70,33 @@ public class quanlysanpham extends javax.swing.JPanel {
                 loai.getMota()
             });
         }
+    }
+    
+    private void loadSP() throws SQLException {
+        sanphamDAO dao= new sanphamDAO(dbconnection.getConnection());
+        List<sanpham> list=dao.getAll();
+        DefaultTableModel model= (DefaultTableModel) tblsanpham.getModel();
+        model.setRowCount(0);
+        for(sanpham sp : list){
+            model.addRow(new Object[]{
+                sp.getMasp(),
+                sp.getTensp(),
+                sp.getMaloai(),
+                sp.getSoluong(),
+                sp.getGiaban(),
+                sp.getGianhap(),
+                sp.getTrangthai()
+            });
+        }
+    }
+    
+    private void clear() {
+        txtmasp.setText("");
+        txttensp.setText("");
+        txtsoluongton.setText("");
+        txtgianhap.setText("");
+        txtgiaban.setText("");
+        cbloaisp.setSelectedIndex(-1);
     }
 
     /**
@@ -83,7 +132,6 @@ public class quanlysanpham extends javax.swing.JPanel {
         jLabel11 = new javax.swing.JLabel();
         txtmasp = new javax.swing.JTextField();
         txttensp = new javax.swing.JTextField();
-        txtmaloaisp = new javax.swing.JTextField();
         txtsoluongton = new javax.swing.JTextField();
         txtgiaban = new javax.swing.JTextField();
         txtgianhap = new javax.swing.JTextField();
@@ -94,6 +142,7 @@ public class quanlysanpham extends javax.swing.JPanel {
         btntimkiemsp = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblsanpham = new javax.swing.JTable();
+        cbloaisp = new javax.swing.JComboBox<>();
 
         panelLeft.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
@@ -229,7 +278,7 @@ public class quanlysanpham extends javax.swing.JPanel {
         jLabel7.setText("Tên sản phẩm:");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Mã loại:");
+        jLabel8.setText("Tên loại:");
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel9.setText("Số lượng:");
@@ -323,8 +372,8 @@ public class quanlysanpham extends javax.swing.JPanel {
                                 .addGap(15, 15, 15)
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtmaloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(cbloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel9)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtsoluongton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -344,8 +393,8 @@ public class quanlysanpham extends javax.swing.JPanel {
                     .addComponent(jLabel9)
                     .addComponent(txtmasp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txttensp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtmaloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtsoluongton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtsoluongton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbloaisp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(panelRightLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
@@ -511,7 +560,97 @@ public class quanlysanpham extends javax.swing.JPanel {
     }//GEN-LAST:event_txttenspActionPerformed
 
     private void btnthemspActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemspActionPerformed
-        // TODO add your handling code here:
+        String masptext=txtmasp.getText();
+        String tensptext=txttensp.getText();
+        loaisanpham loaisp= (loaisanpham) cbloaisp.getSelectedItem();
+        String soluongtext=txtsoluongton.getText();
+        String giabantext=txtgiaban.getText();
+        String gianhaptext=txtgianhap.getText();
+        if (validate.isEmpty(masptext) || !validate.isPositiveInteger(masptext)) {
+            JOptionPane.showMessageDialog(this, "Mã sản phẩm phải là số nguyên dương!");
+            return;
+        }
+        else if (validate.isEmpty(tensptext)) {
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống!");
+            return ;
+        }
+        else if (loaisp == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại sản phẩm!");
+            return;
+        }
+        else if (validate.isEmpty(soluongtext) || !validate.isInteger(soluongtext)) {
+            JOptionPane.showMessageDialog(this, "Số lượng tồn phải là số nguyên!");
+            return;
+        }
+        else if (Integer.parseInt(soluongtext) < 0) {
+            JOptionPane.showMessageDialog(this, "Số lượng tồn phải >= 0!");
+            return;
+        }
+        else if (validate.isEmpty(giabantext)) {
+            JOptionPane.showMessageDialog(this, "Giá bán không được để trống!");
+            return;
+        }
+        try {
+            double giaban = Double.parseDouble(giabantext);
+            if (giaban < 0) {
+                JOptionPane.showMessageDialog(this, "Giá bán phải >= 0!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá bán phải là số hợp lệ!");
+            return;
+        }
+        if (validate.isEmpty(gianhaptext)) {
+            JOptionPane.showMessageDialog(this, "Giá nhập không được để trống!");
+            return;
+        }
+        try {
+            double gianhap = Double.parseDouble(gianhaptext);
+            if (gianhap < 0) {
+                JOptionPane.showMessageDialog(this, "Giá nhập phải >= 0!");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá nhập phải là số hợp lệ!");
+            return;
+        }
+        if (Double.parseDouble(giabantext) < Double.parseDouble(gianhaptext)) {
+            JOptionPane.showMessageDialog(this, "Giá bán phải lớn hơn hoặc bằng giá nhập!");
+            return;
+        }
+        int masp = Integer.parseInt(masptext);
+        int soluong = Integer.parseInt(soluongtext);
+        
+        int maloai=loaisp.getMaloai();
+        double gianhap = Double.parseDouble(gianhaptext);
+        double giaban = Double.parseDouble(giabantext);
+        String tensp = tensptext;
+
+        sanpham sp=new sanpham();
+        sp.setMasp(masp);
+        sp.setTensp(tensp);
+        sp.setMaloai(maloai);
+        sp.setSoluong(soluong);
+        sp.setGianhap(gianhap);
+        sp.setGiaban((float) giaban);
+
+        sanphamDAO dao = new sanphamDAO(dbconnection.getConnection());
+        if (dao.isMaspExist(masp)) {
+            JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại!");
+            return;
+        }
+        boolean success;
+        try {
+            success = dao.insert(sp);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(quanlysanpham.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        clear();
     }//GEN-LAST:event_btnthemspActionPerformed
 
 
@@ -523,6 +662,7 @@ public class quanlysanpham extends javax.swing.JPanel {
     private javax.swing.JButton btntimkiemsp;
     private javax.swing.JButton btnxoaloai;
     private javax.swing.JButton btnxoasp;
+    private javax.swing.JComboBox<loaisanpham> cbloaisp;
     private javax.swing.JComboBox<String> cbtimkiemsp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -545,7 +685,6 @@ public class quanlysanpham extends javax.swing.JPanel {
     private javax.swing.JTextField txtgiaban;
     private javax.swing.JTextField txtgianhap;
     private javax.swing.JTextField txtmaloai;
-    private javax.swing.JTextField txtmaloaisp;
     private javax.swing.JTextField txtmasp;
     private javax.swing.JTextArea txtmota;
     private javax.swing.JTextField txtsoluongton;
