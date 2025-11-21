@@ -690,7 +690,7 @@ public class mainmenu extends javax.swing.JFrame {
         }
         
         DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
-
+        sanphamDAO spDAO = new sanphamDAO(dbconnection.getConnection());
         for (int i = 0; i < model.getRowCount(); i++) {
             int masp = (int) model.getValueAt(i, 1);
             int soluong = (int) model.getValueAt(i, 3);
@@ -699,6 +699,7 @@ public class mainmenu extends javax.swing.JFrame {
 
             try {
                 chitietphieuDAO.themChiTietPhieu(maphieu, masp, soluong, dongia, thanhtien);
+                spDAO.congSoLuong(masp, soluong);
             } catch (SQLException ex) {
                 Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -710,8 +711,6 @@ public class mainmenu extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
     }//GEN-LAST:event_btnphieunhapluuActionPerformed
 
     private void btnphieunhapthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapthemActionPerformed

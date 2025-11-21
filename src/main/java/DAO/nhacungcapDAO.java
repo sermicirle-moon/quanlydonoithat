@@ -21,7 +21,7 @@ import java.util.ArrayList;
  * @author Admin
  */
 public class nhacungcapDAO {
-      private Connection conn;
+    private Connection conn;
 
     public nhacungcapDAO(Connection conn) {
         this.conn = conn;

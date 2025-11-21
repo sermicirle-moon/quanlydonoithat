@@ -12,6 +12,7 @@ public class sanpham {
     private int masp;
     private String tensp;
     private int maloai;
+    private String tenloai;
     private int soluong;
     private double giaban;
     private double gianhap;
@@ -20,16 +21,25 @@ public class sanpham {
     public sanpham() {
     }
 
-    public sanpham(int masp, String tensp, int maloai, int soluong, double giaban, double gianhap, String trangthai) {
+    public sanpham(int masp, String tensp, int maloai, String tenloai, int soluong, double giaban, double gianhap, String trangthai) {
         this.masp = masp;
         this.tensp = tensp;
         this.maloai = maloai;
+        this.tenloai = tenloai;
         this.soluong = soluong;
         this.giaban = giaban;
         this.gianhap = gianhap;
         this.trangthai = trangthai;
     }
 
+    public String getTenloai() {
+        return tenloai;
+    }
+
+    public void setTenloai(String tenloai) {
+        this.tenloai = tenloai;
+    }
+    
     public int getMasp() {
         return masp;
     }

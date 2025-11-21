@@ -28,7 +28,13 @@ public class sanphamDAO {
     // 1. Lấy tất cả sản phẩm
     public List<sanpham> getAll() throws SQLException {
         List<sanpham> list = new ArrayList<>();
-        String sql = "SELECT * FROM sanpham";
+            String sql = """
+            SELECT sp.masp, sp.tensp, sp.maloai, sp.soluong, sp.giaban, sp.gianhap, sp.trangthai,
+                   l.tenloai
+            FROM sanpham sp
+            INNER JOIN loaisanpham l ON sp.maloai = l.maloai
+            ORDER BY sp.masp
+        """;
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
 
@@ -37,6 +43,7 @@ public class sanphamDAO {
             sp.setMasp(rs.getInt("masp"));
             sp.setTensp(rs.getString("tensp"));
             sp.setMaloai(rs.getInt("maloai"));
+            sp.setTenloai(rs.getString("tenloai"));
             sp.setSoluong(rs.getInt("soluong"));
             sp.setGiaban((float) rs.getDouble("giaban"));
             sp.setGianhap((float) rs.getDouble("gianhap"));
@@ -57,8 +64,8 @@ public class sanphamDAO {
         ps.setString(2, sp.getTensp());
         ps.setInt(3, sp.getMaloai());
         ps.setInt(4, sp.getSoluong());
-        ps.setDouble(5, sp.getGianhap());
-        ps.setDouble(6, sp.getGiaban());
+        ps.setDouble(5, sp.getGiaban());
+        ps.setDouble(6, sp.getGianhap());
         int row = ps.executeUpdate();
         ps.close();
         return row > 0;
@@ -66,15 +73,14 @@ public class sanphamDAO {
 
     // 3. Cập nhật sản phẩm
     public boolean update(sanpham sp) throws SQLException {
-        String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=?, gianhap=?, trangthai=? WHERE masp=?";
+        String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=?, gianhap=? WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, sp.getTensp());
         ps.setInt(2, sp.getMaloai());
         ps.setInt(3, sp.getSoluong());
-        ps.setDouble(4, sp.getGianhap());
-        ps.setDouble(5, sp.getGiaban());
-        ps.setString(6, sp.getTrangthai());
-        ps.setInt(7, sp.getMasp());
+        ps.setDouble(4, sp.getGiaban());
+        ps.setDouble(5, sp.getGianhap());
+        ps.setInt(6, sp.getMasp());
 
         int row = ps.executeUpdate();
         ps.close();
@@ -149,5 +155,35 @@ public class sanphamDAO {
             e.printStackTrace();
         }
         return false;
+    }
+    
+    public boolean xoaNhieuSanPham(List<Integer> listmasp) throws SQLException{
+        boolean AllDeleted=true;
+        try{
+            conn.setAutoCommit(false);
+            String sql = "DELETE FROM sanpham WHERE masp = ?";
+            PreparedStatement ps=conn.prepareStatement(sql);
+            for(int masp:listmasp){
+                ps.setInt(1, masp);
+                int n = ps.executeUpdate();
+                if (n == 0) AllDeleted = false;
+            }
+            conn.commit(); // commit transaction
+            ps.close();
+        } catch (SQLException e) {
+            conn.rollback(); // rollback nếu có lỗi
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+        }
+        return AllDeleted;
+    }
+    
+    public boolean congSoLuong(int masp, int soluong) throws SQLException {
+        String sql = "UPDATE sanpham SET soluong = soluong + ? WHERE masp = ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, soluong);
+        ps.setInt(2, masp);
+        return ps.executeUpdate() > 0;
     }
 }
