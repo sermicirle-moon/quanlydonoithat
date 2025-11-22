@@ -48,11 +48,12 @@ public class nhacungcapDAO {
     }
 
     public boolean insert(nhacungcap ncc) throws SQLException {
-        String sql = "INSERT INTO nhacungcap(tenncc, diachincc, sdtncc) VALUES(?,?,?)";
+        String sql = "INSERT INTO nhacungcap(mancc, tenncc, diachincc, sdtncc) VALUES(?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, ncc.getTenncc());
-        ps.setString(2, ncc.getDiachincc());
-        ps.setString(3, ncc.getSdtncc());
+        ps.setInt(1, ncc.getMancc());
+        ps.setString(2, ncc.getTenncc());
+        ps.setString(3, ncc.getDiachincc());
+        ps.setString(4, ncc.getSdtncc());
 
         int row = ps.executeUpdate();
         ps.close();

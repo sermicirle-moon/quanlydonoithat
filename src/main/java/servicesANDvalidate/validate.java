@@ -30,4 +30,16 @@ public class validate {
     public static boolean isEmpty(String value) {
         return value == null || value.trim().isEmpty();
     }
+    
+    public static boolean isValidPhoneNumber(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return false;
+        }
+
+        if (!value.matches("\\d+")) {
+            return false;
+        }
+
+        return (value.length() >= 9 && value.length() <= 11);
+    }
 }

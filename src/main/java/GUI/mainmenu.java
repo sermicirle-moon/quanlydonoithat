@@ -439,6 +439,11 @@ public class mainmenu extends javax.swing.JFrame {
         btntaikhoan.setText("tài khoản");
 
         btnnhasanxuat.setText("nhà cung cấp");
+        btnnhasanxuat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnnhasanxuatActionPerformed(evt);
+            }
+        });
 
         btndonvi.setText("đơn vị vận chuyển");
         btndonvi.addActionListener(new java.awt.event.ActionListener() {
@@ -885,6 +890,16 @@ public class mainmenu extends javax.swing.JFrame {
             Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnxoaphieunhapActionPerformed
+
+    private void btnnhasanxuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnhasanxuatActionPerformed
+        CardLayout cl = (CardLayout) jPanel3.getLayout();
+        try {
+            jPanel3.add(new quanlynhacungcap(), "quản lý nhà cung cấp");
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cl.show(jPanel3, "quản lý nhà cung cấp");
+    }//GEN-LAST:event_btnnhasanxuatActionPerformed
 
     /**
      * @param args the command line arguments
