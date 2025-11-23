@@ -324,7 +324,7 @@ public class quanlynhacungcap extends javax.swing.JPanel {
                 loadNhaCungCap();
                 clear();
             } else {
-                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+                JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");               
             }
 
         } catch (SQLException e) {
@@ -369,6 +369,7 @@ public class quanlynhacungcap extends javax.swing.JPanel {
         try {
                 dao.delete(ma);
                 loadNhaCungCap();
+                clear();
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Không thể xóa nhà cung cấp có mã: " + ma);

@@ -504,7 +504,11 @@ public class quanlysanpham extends javax.swing.JPanel {
         } catch (SQLException ex) {
             Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        try {
+            cbloaiSP();
+        } catch (SQLException ex) {
+            Logger.getLogger(quanlysanpham.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnthemloaiActionPerformed
 
     private void btnsualoaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsualoaiActionPerformed
@@ -539,13 +543,20 @@ public class quanlysanpham extends javax.swing.JPanel {
                 }
                 else{
                     JOptionPane.showMessageDialog(this, "Cập nhật thất bại");
+                    txtmaloai.setText(null);
+                    txttenloai.setText(null);
+                    txtmota.setText(null);
                 }
             }
             catch(SQLException e){
                 JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
             }
         }
-        
+        try {
+            cbloaiSP();
+        } catch (SQLException ex) {
+            Logger.getLogger(quanlysanpham.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnsualoaiActionPerformed
 
     private void tblloaispMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblloaispMouseClicked
@@ -574,9 +585,15 @@ public class quanlysanpham extends javax.swing.JPanel {
             boolean ok=loaidao.xoaNhieuLoaiSanPham(listmaloai);
             if(ok){
                 JOptionPane.showMessageDialog(this, "Xóa loại sản phẩm thành công");
+                txtmaloai.setText(null);
+                txttenloai.setText(null);
+                txtmota.setText(null);
             }
             else{
                 JOptionPane.showMessageDialog(this, "Xóa thất bại");
+                txtmaloai.setText(null);
+                txttenloai.setText(null);
+                txtmota.setText(null);
             }
         }catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Lỗi xóa loại sản phẩm: " + e.getMessage());
@@ -586,6 +603,11 @@ public class quanlysanpham extends javax.swing.JPanel {
             loadLoaiSP();
         } catch (SQLException ex) {
             Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            cbloaiSP();
+        } catch (SQLException ex) {
+            Logger.getLogger(quanlysanpham.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnxoaloaiActionPerformed
 
@@ -678,8 +700,10 @@ public class quanlysanpham extends javax.swing.JPanel {
             success = dao.insert(sp);
             if (success) {
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
+                clear();
             } else {
                 JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!");
+                clear();
             }
         } catch (SQLException ex) {
             Logger.getLogger(quanlysanpham.class.getName()).log(Level.SEVERE, null, ex);
@@ -753,6 +777,7 @@ public class quanlysanpham extends javax.swing.JPanel {
                 } 
                 else{
                     JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+                    clear();
                 }
             } catch (SQLException ex) {
                 Logger.getLogger(quanlysanpham.class.getName()).log(Level.SEVERE, null, ex);
@@ -788,9 +813,11 @@ public class quanlysanpham extends javax.swing.JPanel {
             if(ok){
                 JOptionPane.showMessageDialog(this, "Xóa sản phẩm thành công");
                 loadSP();
+                clear();
             }
             else{
                 JOptionPane.showMessageDialog(this, "Xóa thất bại");
+                clear();
             }
         }catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Lỗi xóa sản phẩm: " + e.getMessage());

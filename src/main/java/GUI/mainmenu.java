@@ -641,7 +641,13 @@ public class mainmenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnsanphamActionPerformed
 
     private void btndonviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndonviActionPerformed
-        // TODO add your handling code here:
+        CardLayout cl = (CardLayout) jPanel3.getLayout();
+        try {
+            jPanel3.add(new quanlydonvivanchuyen(), "quản lý đơn vị vận chuyển");
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cl.show(jPanel3, "quản lý đơn vị vận chuyển");
     }//GEN-LAST:event_btndonviActionPerformed
 
     private void btnthemphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemphieunhapActionPerformed
