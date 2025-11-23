@@ -11,7 +11,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import servicesANDvalidate.validate;
 
 /**
@@ -19,14 +21,33 @@ import servicesANDvalidate.validate;
  * @author Admin
  */
 public class quanlydonvivanchuyen extends javax.swing.JPanel {
-
+    private TableRowSorter<DefaultTableModel> sorterDVVC;
     /**
      * Creates new form quanlydonvivanchuyen
      */
     public quanlydonvivanchuyen() throws SQLException{
         initComponents();
         loadDvvc();
-        
+        sorterDVVC = new TableRowSorter<>((DefaultTableModel) tbldvvc.getModel());
+        tbldvvc.setRowSorter(sorterDVVC);
+
+        txttimkiemdvvc.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+
+            private void filter() {
+                String text = txttimkiemdvvc.getText();
+                if (text.trim().length() == 0) {
+                    sorterDVVC.setRowFilter(null);
+                } else {
+                    sorterDVVC.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+        });  
     }
     
     private void clearform(){
@@ -75,7 +96,7 @@ public class quanlydonvivanchuyen extends javax.swing.JPanel {
         btnsuadonvi = new javax.swing.JButton();
         btnxoadonvi = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        cbdonvi = new javax.swing.JComboBox<>();
+        txttimkiemdvvc = new javax.swing.JTextField();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("QUẢN LÝ ĐƠN VỊ VẬN CHUYỂN");
@@ -183,7 +204,7 @@ public class quanlydonvivanchuyen extends javax.swing.JPanel {
                                     .addComponent(jLabel1)))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(46, 46, 46)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(btnthemdonvi)
                                         .addGap(58, 58, 58)
@@ -192,8 +213,8 @@ public class quanlydonvivanchuyen extends javax.swing.JPanel {
                                         .addComponent(btnxoadonvi))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jLabel5)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(cbdonvi, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txttimkiemdvvc)))))
                         .addGap(0, 304, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -227,7 +248,7 @@ public class quanlydonvivanchuyen extends javax.swing.JPanel {
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(cbdonvi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txttimkiemdvvc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 347, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -381,7 +402,6 @@ public class quanlydonvivanchuyen extends javax.swing.JPanel {
     private javax.swing.JButton btnsuadonvi;
     private javax.swing.JButton btnthemdonvi;
     private javax.swing.JButton btnxoadonvi;
-    private javax.swing.JComboBox<String> cbdonvi;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -394,5 +414,6 @@ public class quanlydonvivanchuyen extends javax.swing.JPanel {
     private javax.swing.JTextField txtmadonvi;
     private javax.swing.JTextField txtsdtdonvi;
     private javax.swing.JTextField txttendonvi;
+    private javax.swing.JTextField txttimkiemdvvc;
     // End of variables declaration//GEN-END:variables
 }
