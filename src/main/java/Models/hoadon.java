@@ -4,13 +4,15 @@
  */
 package Models;
 
+import java.sql.Date;
+
 /**
  *
  * @author Admin
  */
 public class hoadon {
     private int mahoadon;
-    private String ngayxuathd;
+    private Date ngayxuathd;
     private double tongtien;
     private String trangthai;
     private int makhachhang;
@@ -18,7 +20,7 @@ public class hoadon {
     public hoadon() {
     }
 
-    public hoadon(int mahoadon, String ngayxuathd, double tongtien, String trangthai, int makhachhang) {
+    public hoadon(int mahoadon, Date ngayxuathd, double tongtien, String trangthai, int makhachhang) {
         this.mahoadon = mahoadon;
         this.ngayxuathd = ngayxuathd;
         this.tongtien = tongtien;
@@ -30,7 +32,7 @@ public class hoadon {
         return mahoadon;
     }
 
-    public String getNgayxuathd() {
+    public Date getNgayxuathd() {
         return ngayxuathd;
     }
 
@@ -50,7 +52,7 @@ public class hoadon {
         this.mahoadon = mahoadon;
     }
 
-    public void setNgayxuathd(String ngayxuathd) {
+    public void setNgayxuathd(Date ngayxuathd) {
         this.ngayxuathd = ngayxuathd;
     }
 
@@ -65,6 +67,5 @@ public class hoadon {
     public void setMakhachhang(int makhachhang) {
         this.makhachhang = makhachhang;
     }
-    
     
 }

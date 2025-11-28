@@ -433,6 +433,11 @@ public class mainmenu extends javax.swing.JFrame {
         });
 
         btnphieuxuat.setText("phiếu xuất");
+        btnphieuxuat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnphieuxuatActionPerformed(evt);
+            }
+        });
 
         btnbaocao.setText("báo cáo");
 
@@ -653,7 +658,7 @@ public class mainmenu extends javax.swing.JFrame {
     private void btnthemphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemphieunhapActionPerformed
         if (themchitietphieu == null || !themchitietphieu.isDisplayable()) {
             themchitietphieu = new JDialog(this, "Thêm phiếu nhập", true);
-            themchitietphieu.getContentPane().add(pnchitietphieu); // panel chứa form chi tiết
+            themchitietphieu.getContentPane().add(pnchitietphieu);
             themchitietphieu.pack();
             themchitietphieu.setLocationRelativeTo(this);
             themchitietphieu.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -906,6 +911,16 @@ public class mainmenu extends javax.swing.JFrame {
         }
         cl.show(jPanel3, "quản lý nhà cung cấp");
     }//GEN-LAST:event_btnnhasanxuatActionPerformed
+
+    private void btnphieuxuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieuxuatActionPerformed
+        CardLayout cl = (CardLayout) jPanel3.getLayout();
+        try {
+            jPanel3.add(new chucnangphieuxuat(), "Phiếu xuất");
+        } catch (SQLException ex) {
+            Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cl.show(jPanel3, "Phiếu xuất");
+    }//GEN-LAST:event_btnphieuxuatActionPerformed
 
     /**
      * @param args the command line arguments

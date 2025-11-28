@@ -56,4 +56,8 @@ public class donvivanchuyen {
         this.diachidvvc = diachidvvc;
     }
     
+    @Override
+    public String toString(){
+        return tendvvc;
+    }
 }
