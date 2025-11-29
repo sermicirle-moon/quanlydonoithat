@@ -448,9 +448,10 @@
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Segoe UI" size="20" style="1"/>
+                  <Font name="Segoe UI" size="24" style="1"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="jLabel1"/>
+                <Property name="text" type="java.lang.String" value="C&#x1eec;A H&#xc0;NG &#x110;&#x1ed2; N&#x1ed8;I TH&#x1ea4;T"/>
+                <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
             </Component>
           </SubComponents>
@@ -537,6 +538,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="h&#xf3;a &#x111;&#x1a1;n"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnhoadonActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnphieunhap">
               <Properties>
@@ -584,6 +588,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="nh&#xe2;n vi&#xea;n"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnnhanvienActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

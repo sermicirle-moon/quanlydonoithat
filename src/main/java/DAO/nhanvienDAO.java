@@ -29,7 +29,7 @@ public class nhanvienDAO {
     // 1. Lấy tất cả nhân viên
     public List<nhanvien> getAll() throws SQLException {
         List<nhanvien> list = new ArrayList<>();
-        String sql = "SELECT * FROM NhanVien";
+        String sql = "SELECT * FROM nhanvien";
         Statement st = conn.createStatement();
         ResultSet rs = st.executeQuery(sql);
 
@@ -48,11 +48,11 @@ public class nhanvienDAO {
 
     // 2. Thêm nhân viên mới
     public boolean insert(nhanvien nv) throws SQLException {
-        String sql = "INSERT INTO NhanVien(tennv, sdtnv) VALUES(?, ?)";
+        String sql = "INSERT INTO nhanvien(manv, tennv, sdtnv) VALUES(?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, nv.getTennv());
-        ps.setString(2, nv.getSdtnv());
-
+        ps.setInt(1, nv.getManv());
+        ps.setString(2, nv.getTennv());
+        ps.setString(3, nv.getSdtnv());
         int row = ps.executeUpdate();
         ps.close();
         return row > 0;
@@ -60,7 +60,7 @@ public class nhanvienDAO {
 
     // 3. Cập nhật nhân viên
     public boolean update(nhanvien nv) throws SQLException {
-        String sql = "UPDATE NhanVien SET tennv=?, sdtnv=? WHERE manv=?";
+        String sql = "UPDATE nhanvien SET tennv=?, sdtnv=? WHERE manv=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setString(1, nv.getTennv());
         ps.setString(2, nv.getSdtnv());
@@ -73,7 +73,7 @@ public class nhanvienDAO {
 
     // 4. Xóa nhân viên theo manv
     public boolean delete(int manv) throws SQLException {
-        String sql = "DELETE FROM NhanVien WHERE manv=?";
+        String sql = "DELETE FROM nhanvien WHERE manv=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, manv);
 
@@ -84,7 +84,7 @@ public class nhanvienDAO {
 
     // 5. Tìm nhân viên theo manv
     public nhanvien findById(int manv) throws SQLException {
-        String sql = "SELECT * FROM NhanVien WHERE manv=?";
+        String sql = "SELECT * FROM nhanvien WHERE manv=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, manv);
         ResultSet rs = ps.executeQuery();

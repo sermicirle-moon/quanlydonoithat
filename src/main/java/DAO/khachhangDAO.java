@@ -4,6 +4,7 @@
  */
 package DAO;
 
+import Models.goiykhachhang;
 import Models.khachhang;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,5 +103,22 @@ public class khachhangDAO {
         rs.close();
         ps.close();
         return kh;
+    }
+    
+        public List<goiykhachhang> getkhForComboBox() throws SQLException{
+        List<goiykhachhang> listkh = new ArrayList<>();
+        String sql="select makh, tenkh from khachhang order by tenkh";
+        try(PreparedStatement ps=conn.prepareStatement(sql);
+                ResultSet rs=ps.executeQuery()){
+            while(rs.next()){
+                int id=rs.getInt("makh");
+                String name=rs.getString("tenkh");
+                listkh.add(new goiykhachhang(id,name));
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return listkh;
     }
 }

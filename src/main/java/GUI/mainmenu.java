@@ -394,8 +394,9 @@ public class mainmenu extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        jLabel1.setText("jLabel1");
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setText("CỬA HÀNG ĐỒ NỘI THẤT");
+        jLabel1.setToolTipText("");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -424,6 +425,11 @@ public class mainmenu extends javax.swing.JFrame {
         });
 
         btnhoadon.setText("hóa đơn");
+        btnhoadon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnhoadonActionPerformed(evt);
+            }
+        });
 
         btnphieunhap.setText("phiếu nhập");
         btnphieunhap.addActionListener(new java.awt.event.ActionListener() {
@@ -458,6 +464,11 @@ public class mainmenu extends javax.swing.JFrame {
         });
 
         btnnhanvien.setText("nhân viên");
+        btnnhanvien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnnhanvienActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -921,6 +932,18 @@ public class mainmenu extends javax.swing.JFrame {
         }
         cl.show(jPanel3, "Phiếu xuất");
     }//GEN-LAST:event_btnphieuxuatActionPerformed
+
+    private void btnnhanvienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnhanvienActionPerformed
+        CardLayout cl = (CardLayout) jPanel3.getLayout();
+        jPanel3.add(new Nhanvien(), "Nhân viên");
+        cl.show(jPanel3, "Nhân viên");
+    }//GEN-LAST:event_btnnhanvienActionPerformed
+
+    private void btnhoadonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnhoadonActionPerformed
+        CardLayout cl = (CardLayout) jPanel3.getLayout();
+        jPanel3.add(new Hoadon(), "Hóa đơn");
+        cl.show(jPanel3, "Hóa đơn");
+    }//GEN-LAST:event_btnhoadonActionPerformed
 
     /**
      * @param args the command line arguments
