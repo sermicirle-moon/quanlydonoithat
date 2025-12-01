@@ -13,6 +13,11 @@ public class goiysanpham {
     private String name;
     private double dongia;
 
+    public goiysanpham() {
+    }
+    
+    
+
     public goiysanpham(int id, String name,double dongia) {
         this.id = id;
         this.name = name;
@@ -45,7 +50,7 @@ public class goiysanpham {
     
     @Override
     public String toString() {
-        return name;
+        return name + "-" + id;
     }
 
 }

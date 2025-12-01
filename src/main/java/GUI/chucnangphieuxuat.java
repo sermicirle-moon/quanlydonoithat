@@ -11,6 +11,7 @@ import DAO.hoadonDAO;
 import DAO.nhanvienDAO;
 import DAO.phieuxuatDAO;
 import DAO.phieuxuat_hoadonDAO;
+import DAO.sanphamDAO;
 import Models.chitiethoadon;
 import Models.chitietphieuxuat;
 import Models.donvivanchuyen;
@@ -151,7 +152,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             phieuxuatDAO dao= new phieuxuatDAO(dbconnection.getConnection());
             for (int row : selectedRows) {
                 int mapx = (int) tblphieuxuat.getValueAt(row, 0);
-                dao.updatePhieuXuatAndHoaDon(mapx, "Hủy", "Hủy");
+                dao.updatePhieuXuatAndHoaDon(mapx, "Hủy", "Hủy");              
             }
             JOptionPane.showMessageDialog(this, "Hủy phiếu xuất thành công!");
             loadphieuxuat();
@@ -159,7 +160,6 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi hủy phiếu xuất!");
         }
-
     }
     
     private void handleTraLaiHD(ActionEvent e) {
@@ -343,6 +343,12 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
 
         jLabel5.setText("Thêm hóa đơn:");
 
+        txtthemhoadon.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtthemhoadonActionPerformed(evt);
+            }
+        });
+
         tblhoadonPX.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
@@ -498,7 +504,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 .addGap(22, 22, 22))
         );
 
-        btnthemphieuxuat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnthemphieuxuat.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnthemphieuxuat.setText("Thêm");
         btnthemphieuxuat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -506,7 +512,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             }
         });
 
-        btnxemphieuxuat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnxemphieuxuat.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnxemphieuxuat.setText("Xem");
         btnxemphieuxuat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -514,7 +520,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             }
         });
 
-        btnhuyphieuxuat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnhuyphieuxuat.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnhuyphieuxuat.setText("Hủy ");
         btnhuyphieuxuat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -535,7 +541,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblphieuxuat);
 
-        btndagiao.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btndagiao.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btndagiao.setText("Đã giao");
         btndagiao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -585,7 +591,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                     .addComponent(jLabel6)
                     .addComponent(txttimkiempx, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -618,14 +624,15 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
 
         // 1️⃣ Chuyển hóa đơn từ bảng trên xuống bảng dưới
         for (int i = selectedRows.length - 1; i >= 0; i--) {
-            int row = selectedRows[i];
-            int maHD = (int) modelTren.getValueAt(row, 0);
+            int viewRow = selectedRows[i];
+            int modelRow = tblhoadonPX.convertRowIndexToModel(viewRow); 
+            int maHD = (int) modelTren.getValueAt(modelRow, 0); 
+            Object ngay = modelTren.getValueAt(modelRow, 1);
+            Object tong = modelTren.getValueAt(modelRow, 2);
+            Object makh = modelTren.getValueAt(modelRow, 4);
             newlySelectedHD.add(maHD);
-            Object ngay = modelTren.getValueAt(row, 1);
-            Object tong = modelTren.getValueAt(row, 2);
-            Object makh = modelTren.getValueAt(row, 4);
             modelDuoi.addRow(new Object[]{ maHD, ngay, tong, makh });
-            modelTren.removeRow(row);
+            modelTren.removeRow(modelRow);
         }
 
         // 2️⃣ Lấy tất cả mã hóa đơn hiện đang có trong bảng dưới
@@ -886,6 +893,10 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Giao phiếu xuất thành công");
         }
     }//GEN-LAST:event_btndagiaoActionPerformed
+
+    private void txtthemhoadonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtthemhoadonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtthemhoadonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

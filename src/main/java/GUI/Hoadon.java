@@ -4,7 +4,10 @@
  */
 package GUI;
 
+import DAO.chitiethoadonDAO;
 import DAO.hoadonDAO;
+import DAO.sanphamDAO;
+import Models.chitiethoadon;
 import Models.hoadon;
 import database.dbconnection;
 import java.awt.BorderLayout;
@@ -128,11 +131,6 @@ public class Hoadon extends javax.swing.JPanel {
         
         // Kiểm tra trạng thái hóa đơn - không cho sửa nếu đã hoàn thành
         String trangThai = tbhd.getValueAt(selectedRow, 4).toString();
-        if ("Hủy".equals(trangThai) || "Đã Giao".equals(trangThai)) {
-            JOptionPane.showMessageDialog(this, "Không thể sửa hóa đơn");
-            return;
-        }
-        
         // Lấy thông tin hóa đơn từ database
         Connection conn = dbconnection.getConnection();
         hoadonDAO hdDAO = new hoadonDAO(conn);
@@ -155,85 +153,87 @@ public class Hoadon extends javax.swing.JPanel {
         ex.printStackTrace();
     }
     }
-    private void xoahd(){
+    
+    private void huyHoaDon() {
         try {
-            // Lấy dòng được chọn trong bảng
             int selectedRow = tbhd.getSelectedRow();
 
-            // Kiểm tra xem đã chọn dòng nào chưa
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần xóa!");
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn cần hủy!");
                 return;
             }
 
-            // Lấy mã hóa đơn từ dòng được chọn
             int maHoaDon = Integer.parseInt(tbhd.getValueAt(selectedRow, 0).toString());
             String trangThai = tbhd.getValueAt(selectedRow, 4).toString();
 
-            // Kiểm tra trạng thái trước khi xóa
             if ("Hủy".equals(trangThai) || "Đã Giao".equals(trangThai)) {
-                JOptionPane.showMessageDialog(this, "Không thể xóa hóa đơn");
+                JOptionPane.showMessageDialog(this, "Không thể hủy hóa đơn này!");
                 return;
             }
 
-            // Xác nhận xóa
-            int confirm = JOptionPane.showConfirmDialog(this,"Bạn muốn xóa hóa đơn ","Xác nhận xóa",JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn muốn HỦY hóa đơn này?",
+                "Xác nhận hủy",
+                JOptionPane.YES_NO_OPTION
+            );
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                // Thực hiện xóa với transaction
-                Connection conn = null;
-                boolean success = false;
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
 
-                try {
-                    conn = dbconnection.getConnection();
-                    conn.setAutoCommit(false); // Bắt đầu transaction
+            Connection conn = null;
+            boolean success = false;
 
-                    hoadonDAO hdDAO = new hoadonDAO(conn);
-                    DAO.chitiethoadonDAO cthdDAO = new DAO.chitiethoadonDAO(conn);
+            try {
+                conn = dbconnection.getConnection();
+                conn.setAutoCommit(false);
 
-                    // 1. XÓA CHI TIẾT HÓA ĐƠN TRƯỚC
-                    boolean xoaChiTiet = cthdDAO.deleteAll(maHoaDon);
-                    if (!xoaChiTiet) {
-                        throw new SQLException("Lỗi khi xóa chi tiết hóa đơn");
-                    }
+                hoadonDAO hdDAO = new hoadonDAO(conn);
+                chitiethoadonDAO cthdDAO = new chitiethoadonDAO(conn);
+                sanphamDAO spDAO = new sanphamDAO(conn);
 
-                    // 2. XÓA HÓA ĐƠN CHÍNH
-                    boolean xoaHoaDon = hdDAO.deleteHoaDon(maHoaDon);
-                    if (!xoaHoaDon) {
-                        throw new SQLException("Lỗi khi xóa hóa đơn chính");
-                    }
+                // 1. LẤY DANH SÁCH CHI TIẾT HÓA ĐƠN
+                List<chitiethoadon> listCT = cthdDAO.getByMaHD(maHoaDon);
 
-                    conn.commit(); // Commit transaction
-                    success = true;
-
-                } catch (SQLException e) {
-                    if (conn != null) {
-                        conn.rollback(); // Rollback nếu có lỗi
-                    }
-                    throw e;
-                } finally {
-                    if (conn != null) {
-                        conn.setAutoCommit(true);
-                        conn.close();
+                // 2. CỘNG TRẢ KHO
+                for (chitiethoadon ct : listCT) {
+                    boolean traKho = spDAO.congSoLuong(ct.getMasp(), ct.getSoluong());
+                    if (!traKho) {
+                        throw new SQLException("Không thể cộng kho SP: " + ct.getMasp());
                     }
                 }
 
-                if (success) {
-                    JOptionPane.showMessageDialog(this, "Xóa hóa đơn thành công!");
-                    loadhoadon(); // Load lại danh sách
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa hóa đơn thất bại!");
+                // 3. CẬP NHẬT TRẠNG THÁI HÓA ĐƠN → HỦY
+                boolean updateStatus = hdDAO.updateTrangThai(maHoaDon, "Hủy");
+                if (!updateStatus) {
+                    throw new SQLException("Không thể cập nhật trạng thái hóa đơn");
+                }
+
+                conn.commit();
+                success = true;
+
+            } catch (SQLException e) {
+                if (conn != null) conn.rollback();
+                throw e;
+            } finally {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
                 }
             }
 
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi xóa hóa đơn: " + ex.getMessage());
-            ex.printStackTrace();
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Hủy hóa đơn thành công!");
+                loadhoadon();
+            }
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + ex.getMessage());
             ex.printStackTrace();
-        }                   
+        }
     }
+
     private void setupTableSearch() {
         // Khởi tạo TableRowSorter
         sorterHD = new TableRowSorter<>(tbhd.getModel());
@@ -270,16 +270,17 @@ public class Hoadon extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         btTaohd = new javax.swing.JButton();
         btSuahd = new javax.swing.JButton();
-        btXoahd = new javax.swing.JButton();
+        btnHuyhd = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbhd = new javax.swing.JTable();
         txtkmsp = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("Hóa đơn");
 
-        btTaohd.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        btTaohd.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btTaohd.setText("Tạo hóa đơn");
         btTaohd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -287,7 +288,7 @@ public class Hoadon extends javax.swing.JPanel {
             }
         });
 
-        btSuahd.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        btSuahd.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btSuahd.setText("Sửa ");
         btSuahd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -295,11 +296,11 @@ public class Hoadon extends javax.swing.JPanel {
             }
         });
 
-        btXoahd.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
-        btXoahd.setText("Xóa");
-        btXoahd.addActionListener(new java.awt.event.ActionListener() {
+        btnHuyhd.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        btnHuyhd.setText("Hủy");
+        btnHuyhd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btXoahdActionPerformed(evt);
+                btnHuyhdActionPerformed(evt);
             }
         });
 
@@ -313,14 +314,16 @@ public class Hoadon extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tbhd);
 
-        txtkmsp.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        txtkmsp.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         txtkmsp.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtkmsp.setText("Tìm kiếm");
         txtkmsp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtkmspActionPerformed(evt);
             }
         });
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel1.setText("Tìm kiếm:");
 
         javax.swing.GroupLayout PnHoadonLayout = new javax.swing.GroupLayout(PnHoadon);
         PnHoadon.setLayout(PnHoadonLayout);
@@ -342,8 +345,10 @@ public class Hoadon extends javax.swing.JPanel {
                                 .addGap(53, 53, 53)
                                 .addComponent(btSuahd)
                                 .addGap(72, 72, 72)
-                                .addComponent(btXoahd)
-                                .addGap(81, 81, 81)
+                                .addComponent(btnHuyhd)
+                                .addGap(87, 87, 87)
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtkmsp, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(0, 279, Short.MAX_VALUE)))
                 .addContainerGap())
@@ -357,10 +362,11 @@ public class Hoadon extends javax.swing.JPanel {
                 .addGroup(PnHoadonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btTaohd)
                     .addComponent(btSuahd)
-                    .addComponent(btXoahd)
-                    .addComponent(txtkmsp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnHuyhd)
+                    .addComponent(txtkmsp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
         );
 
@@ -398,22 +404,20 @@ public class Hoadon extends javax.swing.JPanel {
     }//GEN-LAST:event_txtkmspActionPerformed
 
     private void btSuahdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSuahdActionPerformed
-        // TODO add your handling code here:
          suahd();
-
     }//GEN-LAST:event_btSuahdActionPerformed
 
-    private void btXoahdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btXoahdActionPerformed
-        // TODO add your handling code here:
-        xoahd();
-    }//GEN-LAST:event_btXoahdActionPerformed
+    private void btnHuyhdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyhdActionPerformed
+        huyHoaDon();
+    }//GEN-LAST:event_btnHuyhdActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel PnHoadon;
     private javax.swing.JButton btSuahd;
     private javax.swing.JButton btTaohd;
-    private javax.swing.JButton btXoahd;
+    private javax.swing.JButton btnHuyhd;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbhd;

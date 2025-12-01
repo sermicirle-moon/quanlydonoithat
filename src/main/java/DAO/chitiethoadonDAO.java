@@ -86,6 +86,7 @@ public class chitiethoadonDAO {
             chitiethoadon cthd = new chitiethoadon();
             cthd.setMahoadon(rs.getInt("mahoadon"));
             cthd.setMasp(rs.getInt("masp"));
+            cthd.setTensp(rs.getString("tensp"));
             cthd.setSoluong(rs.getInt("soluong"));
             
             cthd.setTongtien(rs.getDouble("tongtien"));

@@ -54,7 +54,7 @@ public class ChitietHd extends javax.swing.JPanel {
     }
     private void Editmode(boolean isEdit) {
         if (isEdit) {
-            //KHÓA CÁC TRƯỜNG KHÔNG CHO SỬA
+            // KHÓA CÁC TRƯỜNG CƠ BẢN
             txtmahd.setEditable(false);
             txtmahd.setEnabled(false);
             cbkh.setEnabled(false);
@@ -66,8 +66,19 @@ public class ChitietHd extends javax.swing.JPanel {
             btthemsp.setEnabled(true);
             btxoasp.setEnabled(true);
 
-        } else {
+            // Nếu trạng thái hóa đơn là Hủy, Chờ duyệt, hoặc Đã giao => khóa tất cả nút
+            if (hoadonsua != null) {
+                String tt = hoadonsua.getTrangthai();
+                if (tt.equalsIgnoreCase("Hủy") || tt.equalsIgnoreCase("Chờ duyệt") || tt.equalsIgnoreCase("Đã giao")) {
+                    cbsp.setEnabled(false);
+                    txtsl.setEnabled(false);
+                    btthemsp.setEnabled(false);
+                    btxoasp.setEnabled(false);
+                    btluuhd.setEnabled(false);
+                }
+            }
 
+        } else {
             // MỞ TẤT CẢ TRƯỜNG CHO TẠO MỚI
             txtmahd.setEditable(true);
             txtmahd.setEnabled(true);
@@ -75,6 +86,9 @@ public class ChitietHd extends javax.swing.JPanel {
             dtnxh.setEnabled(true);
             cbsp.setEnabled(true);
             txtsl.setEnabled(true);
+            btthemsp.setEnabled(true);
+            btxoasp.setEnabled(true);
+            btluuhd.setEnabled(true);
         }
     }
     private void loadDuLieuHoaDon(hoadon hd) {
@@ -94,6 +108,7 @@ public class ChitietHd extends javax.swing.JPanel {
 
             // LOAD CHI TIẾT HÓA ĐƠN VÀO TABLE
             loadChiTietHoaDon(hd.getMahoadon());
+            Editmode(true);
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dữ liệu hóa đơn: " + e.getMessage());
@@ -112,7 +127,7 @@ public class ChitietHd extends javax.swing.JPanel {
             for (chitiethoadon ct : listCTHD) {
                 Object[] rowData = {
                     ct.getMahoadon(),
-                    ct.getMasp(),
+                    ct.getTensp(),
                     ct.getSoluong(),
                     ct.getTongtien()
                 };
@@ -233,8 +248,8 @@ public class ChitietHd extends javax.swing.JPanel {
         //ktra sp tồn tại
         DefaultTableModel model = (DefaultTableModel) tbcthd.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
-            int maspTrongBang = Integer.parseInt(model.getValueAt(i, 1).toString());
-            if (maspTrongBang == masp) {
+            String tenspTrongBang = model.getValueAt(i, 1).toString(); // lấy cột tên sản phẩm
+            if (tenspTrongBang.equalsIgnoreCase(tensp)) { // so sánh tên
                 JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại");
                 return;
             }
@@ -242,7 +257,7 @@ public class ChitietHd extends javax.swing.JPanel {
         // THÊM VÀO BẢNG
         Object[] rowData = {
             madh,        // Mã đơn hàng
-            masp,             // Mã sản phẩm
+            tensp,             // Mã sản phẩm
             soLuongmua,       // Số lượng
             thanhTien         // Thành tiền
         };
@@ -379,10 +394,10 @@ public class ChitietHd extends javax.swing.JPanel {
                 DefaultTableModel model = (DefaultTableModel) tbcthd.getModel();
                 for (int i = 0; i < model.getRowCount(); i++) {
                     String maHDCT = model.getValueAt(i, 0).toString();
-                    int maSP = Integer.parseInt(model.getValueAt(i, 1).toString());
+                    String tenSP = model.getValueAt(i, 1).toString();
                     int soLuong = Integer.parseInt(model.getValueAt(i, 2).toString());
-                    double thanhTien = Double.parseDouble(model.getValueAt(i, 3).toString());
-
+                    double thanhTien = Double.parseDouble(model.getValueAt(i, 3).toString());           
+                    int maSP = getMaspByTensp(tenSP);
                     chitiethoadon ct = new chitiethoadon();
                     ct.setMahoadon(Integer.parseInt(maHDCT));
                     ct.setMasp(maSP);
@@ -392,6 +407,12 @@ public class ChitietHd extends javax.swing.JPanel {
                     boolean themCT = cthdDAO.insert(ct);
                     if (!themCT) {
                         throw new SQLException("Lỗi khi thêm chi tiết hóa đơn dòng " + (i + 1));
+                    }
+                    
+                    sanphamDAO sp= new sanphamDAO(dbconnection.getConnection());
+                    boolean truKho = sp.truSoLuong(maSP, soLuong);
+                    if (!truKho) {
+                        throw new SQLException("Lỗi khi trừ tồn kho sản phẩm " + maSP);
                     }
                 }
 
@@ -425,6 +446,12 @@ public class ChitietHd extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Lỗi khi tạo hóa đơn: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+    private int getMaspByTensp(String tensp) throws SQLException {
+        sanphamDAO spDAO = new sanphamDAO(dbconnection.getConnection());
+        goiysanpham sp = spDAO.getByName(tensp);
+        if (sp != null) return sp.getId();
+        else throw new SQLException("Không tìm thấy sản phẩm: " + tensp);
     }
 
     private void capNhatHoaDon() {
@@ -460,10 +487,10 @@ public class ChitietHd extends javax.swing.JPanel {
                 DefaultTableModel model = (DefaultTableModel) tbcthd.getModel();
                 for (int i = 0; i < model.getRowCount(); i++) {
                     String maHDCT = model.getValueAt(i, 0).toString();
-                    int maSP = Integer.parseInt(model.getValueAt(i, 1).toString());
+                    String tenSP = model.getValueAt(i, 1).toString();
                     int soLuong = Integer.parseInt(model.getValueAt(i, 2).toString());
                     double thanhTien = Double.parseDouble(model.getValueAt(i, 3).toString());
-
+                    int maSP = getMaspByTensp(tenSP);
                     chitiethoadon ct = new chitiethoadon();
                     ct.setMahoadon(Integer.parseInt(maHDCT));
                     ct.setMasp(maSP);
@@ -547,25 +574,25 @@ public class ChitietHd extends javax.swing.JPanel {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Chi tiết hóa đơn");
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Tên sản phẩm");
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel4.setText("Mã đơn hàng");
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel5.setText("ngày xuất hàng");
 
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel7.setText("Số lượng");
 
-        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel8.setText("Khách hàng");
 
-        btthemsp.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        btthemsp.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btthemsp.setText("Thêm ");
         btthemsp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -573,7 +600,7 @@ public class ChitietHd extends javax.swing.JPanel {
             }
         });
 
-        btxoasp.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        btxoasp.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btxoasp.setText("Xóa");
         btxoasp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -581,7 +608,7 @@ public class ChitietHd extends javax.swing.JPanel {
             }
         });
 
-        btthoat.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        btthoat.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btthoat.setText("Thoát");
         btthoat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -589,7 +616,7 @@ public class ChitietHd extends javax.swing.JPanel {
             }
         });
 
-        btluuhd.setFont(new java.awt.Font("Times New Roman", 1, 12)); // NOI18N
+        btluuhd.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         btluuhd.setText("Lưu hóa đơn");
         btluuhd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -602,7 +629,7 @@ public class ChitietHd extends javax.swing.JPanel {
 
             },
             new String [] {
-                "Mã đơn hàng", "Mã sp", "Số lượng", "Thành tiền"
+                "Mã đơn hàng", "Tên sản phẩm", "Số lượng", "Thành tiền"
             }
         ));
         jScrollPane1.setViewportView(tbcthd);
@@ -668,7 +695,7 @@ public class ChitietHd extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(18, 18, 18)

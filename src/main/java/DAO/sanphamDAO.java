@@ -186,4 +186,30 @@ public class sanphamDAO {
         ps.setInt(2, masp);
         return ps.executeUpdate() > 0;
     }
+    
+    public boolean truSoLuong(int masp, int soluong) throws SQLException {
+        String sql = "UPDATE sanpham SET soluong = soluong - ? WHERE masp = ? AND soluong >= ?";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, soluong);
+        ps.setInt(2, masp);
+        ps.setInt(3, soluong);
+        return ps.executeUpdate() > 0;
+    }
+    
+    public goiysanpham getByName(String tensp) throws SQLException {
+        String sql = "SELECT * FROM sanpham WHERE tensp = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tensp);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    goiysanpham sp= new goiysanpham();
+                    sp.setId(rs.getInt("masp"));       // cột id
+                    sp.setName(rs.getString("tensp")); // cột tên
+                    sp.setDongia(rs.getDouble("giaban")); // cột giá nếu có
+                    return sp;
+                }
+            }
+        }
+        return null; // không tìm thấy
+    }
 }
