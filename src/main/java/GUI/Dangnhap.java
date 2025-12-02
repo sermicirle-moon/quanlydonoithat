@@ -455,13 +455,13 @@ public class Dangnhap extends javax.swing.JFrame {
             if (dao.checkLogin(email, password)) {
             // Lấy thông tin user
             
-            taikhoan currentUser = dao.getTaiKhoanByEmail(email);
+                taikhoan currentUser = dao.getTaiKhoanByEmail(email);
                 JOptionPane.showMessageDialog(this,"Đăng nhập thành công!");
-                // Đóng form đăng nhập
-                this.dispose();
+                // Đóng form đăng nhập                
                 mainmenu mainForm = new mainmenu();
                 mainForm.setCurrentUser(currentUser); // Cần thêm phương thức này trong mainmenu
                 mainForm.setVisible(true);
+                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this,"Sai email hoặc mật khẩu!");
                 txtMk.setText("");
