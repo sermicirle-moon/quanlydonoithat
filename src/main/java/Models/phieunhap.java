@@ -4,6 +4,7 @@
  */
 package Models;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 /**
@@ -12,27 +13,33 @@ import java.util.logging.Logger;
  */
 public class phieunhap {
     private int maphieu;
-    private String ngaynhap;
+    private Date ngaynhap;
     private int manv;
+    private String tennv;
     private int macc;
+    private String tenncc;
     private double tongtien;
 
     public phieunhap() {
     }
 
-    public phieunhap(int maphieu, String ngaynhap, int manv, int macc, double tongtien) {
+    public phieunhap(int maphieu, Date ngaynhap, int manv, String tennv, int macc, String tenncc, double tongtien) {
         this.maphieu = maphieu;
         this.ngaynhap = ngaynhap;
         this.manv = manv;
+        this.tennv = tennv;
         this.macc = macc;
+        this.tenncc = tenncc;
         this.tongtien = tongtien;
     }
+
+    
 
     public int getMaphieu() {
         return maphieu;
     }
 
-    public String getNgaynhap() {
+    public Date getNgaynhap() {
         return ngaynhap;
     }
 
@@ -52,7 +59,7 @@ public class phieunhap {
         this.maphieu = maphieu;
     }
 
-    public void setNgaynhap(String ngaynhap) {
+    public void setNgaynhap(Date ngaynhap) {
         this.ngaynhap = ngaynhap;
     }
 
@@ -64,6 +71,22 @@ public class phieunhap {
         this.macc = macc;
     }
 
+    public String getTennv() {
+        return tennv;
+    }
+
+    public void setTennv(String tennv) {
+        this.tennv = tennv;
+    }
+
+    public String getTenncc() {
+        return tenncc;
+    }
+
+    public void setTenncc(String tenncc) {
+        this.tenncc = tenncc;
+    }
+    
     public void setTongtien(double tongtien) {
         this.tongtien = tongtien;
     }

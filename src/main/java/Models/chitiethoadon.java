@@ -11,15 +11,17 @@ package Models;
 public class chitiethoadon {
     private int mahoadon;
     private int masp;
+    private String tensp;
     private int soluong;
     private double tongtien;
 
     public chitiethoadon() {
     }
 
-    public chitiethoadon(int mahoadon, int masp, int soluong, double tongtien) {
+    public chitiethoadon(int mahoadon, int masp, String tensp, int soluong, double tongtien) {
         this.mahoadon = mahoadon;
         this.masp = masp;
+        this.tensp = tensp;
         this.soluong = soluong;
         this.tongtien = tongtien;
     }
@@ -54,6 +56,14 @@ public class chitiethoadon {
 
     public void setTongtien(double tongtien) {
         this.tongtien = tongtien;
+    }
+
+    public String getTensp() {
+        return tensp;
+    }
+
+    public void setTensp(String tensp) {
+        this.tensp = tensp;
     }
     
 }

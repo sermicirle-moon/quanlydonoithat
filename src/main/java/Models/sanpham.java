@@ -11,59 +11,89 @@ package Models;
 public class sanpham {
     private int masp;
     private String tensp;
-    private String maloai;
+    private int maloai;
+    private String tenloai;
     private int soluong;
     private double giaban;
+    private double gianhap;
+    private String trangthai;
 
     public sanpham() {
     }
 
-    public sanpham(int masp, String tensp, String maloai, int soluong, float giaban) {
+    public sanpham(int masp, String tensp, int maloai, String tenloai, int soluong, double giaban, double gianhap, String trangthai) {
         this.masp = masp;
         this.tensp = tensp;
         this.maloai = maloai;
+        this.tenloai = tenloai;
         this.soluong = soluong;
         this.giaban = giaban;
+        this.gianhap = gianhap;
+        this.trangthai = trangthai;
     }
 
+    public String getTenloai() {
+        return tenloai;
+    }
+
+    public void setTenloai(String tenloai) {
+        this.tenloai = tenloai;
+    }
+    
     public int getMasp() {
         return masp;
-    }
-
-    public String getTensp() {
-        return tensp;
-    }
-
-    public String getMaloai() {
-        return maloai;
-    }
-
-    public int getSoluong() {
-        return soluong;
-    }
-
-    public double getGiaban() {
-        return giaban;
     }
 
     public void setMasp(int masp) {
         this.masp = masp;
     }
 
+    public String getTensp() {
+        return tensp;
+    }
+
     public void setTensp(String tensp) {
         this.tensp = tensp;
     }
 
-    public void setMaloai(String maloai) {
+    public int getMaloai() {
+        return maloai;
+    }
+
+    public void setMaloai(int maloai) {
         this.maloai = maloai;
+    }
+
+    public int getSoluong() {
+        return soluong;
     }
 
     public void setSoluong(int soluong) {
         this.soluong = soluong;
     }
 
-    public void setGiaban(float giaban) {
+    public double getGiaban() {
+        return giaban;
+    }
+
+    public void setGiaban(double giaban) {
         this.giaban = giaban;
+    }
+
+    public double getGianhap() {
+        return gianhap;
+    }
+
+    public void setGianhap(double gianhap) {
+        this.gianhap = gianhap;
+    }
+
+    public String getTrangthai() {
+        return trangthai;
+    }
+
+    public void setTrangthai(String trangthai) {
+        this.trangthai = trangthai;
     }
     
 }
