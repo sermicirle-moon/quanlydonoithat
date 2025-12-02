@@ -31,6 +31,7 @@ import DAO.chitietphieunhapDAO;
 import DAO.phieunhapDAO;
 import Models.chitietphieu;
 import Models.phieunhap;
+import Models.taikhoan;
 import java.awt.Component;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +44,7 @@ import servicesANDvalidate.services;
  * @author Admin
  */
 public class mainmenu extends javax.swing.JFrame {
+    private taikhoan currentUser;
     /**
      * Creates new form mainmenu
      */
@@ -73,7 +75,51 @@ public class mainmenu extends javax.swing.JFrame {
         ));
         txtdatechooser.setDate(new java.util.Date());
         loadPhieuNhap();
-        
+        initializeMenuBasedOnRole();
+    }
+    
+    public void setCurrentUser(taikhoan user) {
+        this.currentUser = user;
+        updateUIForUser();
+    }
+
+    // Phương thức cập nhật UI dựa trên user
+    private void updateUIForUser() {
+        if (currentUser != null) {
+            // Ẩn/hiện các nút dựa trên role
+            initializeMenuBasedOnRole();
+        }
+    }
+
+    // Phương thức khởi tạo menu dựa trên role
+    private void initializeMenuBasedOnRole() {
+        if (currentUser != null) {
+            String role = currentUser.getRole();
+
+            switch (role) {
+                case "Nhân viên bán hàng":
+                    // Chỉ hiện các chức năng liên quan đến bán hàng
+                    btnphieunhap.setVisible(false);
+                    btnphieuxuat.setVisible(false);
+
+                    btnnhanvien.setVisible(false);
+                    break;
+
+                case "Nhân viên kho":
+                    // Chỉ hiện các chức năng liên quan đến kho
+                    btnhoadon.setVisible(false);
+                    btnnhanvien.setVisible(false);
+                    break;
+
+                case "Quản lý":
+
+                    break;
+
+                default:
+
+                    break;
+            }
+        }
     }
     
     private void loadSanPham(){
@@ -189,11 +235,11 @@ public class mainmenu extends javax.swing.JFrame {
         btnhoadon = new javax.swing.JButton();
         btnphieunhap = new javax.swing.JButton();
         btnphieuxuat = new javax.swing.JButton();
-        btnbaocao = new javax.swing.JButton();
         btntaikhoan = new javax.swing.JButton();
         btnnhasanxuat = new javax.swing.JButton();
         btndonvi = new javax.swing.JButton();
         btnnhanvien = new javax.swing.JButton();
+        btnDX = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         panelphieunhap = new javax.swing.JPanel();
@@ -445,9 +491,12 @@ public class mainmenu extends javax.swing.JFrame {
             }
         });
 
-        btnbaocao.setText("báo cáo");
-
         btntaikhoan.setText("tài khoản");
+        btntaikhoan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btntaikhoanActionPerformed(evt);
+            }
+        });
 
         btnnhasanxuat.setText("nhà cung cấp");
         btnnhasanxuat.addActionListener(new java.awt.event.ActionListener() {
@@ -470,6 +519,14 @@ public class mainmenu extends javax.swing.JFrame {
             }
         });
 
+        btnDX.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnDX.setText("Đăng xuất");
+        btnDX.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDXActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -486,7 +543,6 @@ public class mainmenu extends javax.swing.JFrame {
                                     .addComponent(btnhoadon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(btnphieuxuat, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnphieunhap, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnbaocao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnnhasanxuat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -495,6 +551,10 @@ public class mainmenu extends javax.swing.JFrame {
                             .addComponent(btndonvi, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btntaikhoan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(btnDX, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,16 +568,16 @@ public class mainmenu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnphieuxuat)
                 .addGap(18, 18, 18)
-                .addComponent(btnbaocao)
-                .addGap(18, 18, 18)
                 .addComponent(btnnhasanxuat)
                 .addGap(18, 18, 18)
                 .addComponent(btndonvi)
                 .addGap(18, 18, 18)
                 .addComponent(btnnhanvien)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btntaikhoan)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDX)
+                .addGap(16, 16, 16))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -945,6 +1005,22 @@ public class mainmenu extends javax.swing.JFrame {
         cl.show(jPanel3, "Hóa đơn");
     }//GEN-LAST:event_btnhoadonActionPerformed
 
+    private void btntaikhoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btntaikhoanActionPerformed
+        jPanel3.removeAll();
+        jPanel3.add(new Taikhoan(currentUser));
+        jPanel3.revalidate();
+        jPanel3.repaint();
+    }//GEN-LAST:event_btntaikhoanActionPerformed
+
+    private void btnDXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDXActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(this,"Bạn có chắc chắn muốn đăng xuất?","Xác nhận đăng xuất",JOptionPane.YES_NO_OPTION);   
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose();
+            Dangnhap loginForm = new Dangnhap();
+            loginForm.setVisible(true);
+        }
+    }//GEN-LAST:event_btnDXActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -985,7 +1061,7 @@ public class mainmenu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnbaocao;
+    private javax.swing.JButton btnDX;
     private javax.swing.JButton btndonvi;
     private javax.swing.JButton btnhoadon;
     private javax.swing.JButton btnnhanvien;
