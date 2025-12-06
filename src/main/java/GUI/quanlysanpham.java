@@ -6,7 +6,6 @@ package GUI;
 
 import DAO.loaisanphamDAO;
 import DAO.sanphamDAO;
-import Models.goiysanpham;
 import Models.loaisanpham;
 import Models.sanpham;
 import database.dbconnection;
@@ -20,7 +19,6 @@ import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
-import servicesANDvalidate.services;
 import servicesANDvalidate.validate;
 
 /**
@@ -28,7 +26,7 @@ import servicesANDvalidate.validate;
  * @author Admin
  */
 public class quanlysanpham extends javax.swing.JPanel {
-    private TableRowSorter<DefaultTableModel> sorterSP;
+    private TableRowSorter<DefaultTableModel> sorterSP; //tạo bộ lọc cho sản phẩm
     /**
      * Creates new form quanlysanpham
      */
@@ -47,8 +45,8 @@ public class quanlysanpham extends javax.swing.JPanel {
             new String [] {"Mã sản phẩm", "Tên sản phẩm", "Tên loại sản phẩm", "Số lượng", "Giá bán", "Giá nhập", "Trạng thái"}
         ));
         sorterSP = new TableRowSorter<>((DefaultTableModel) tblsanpham.getModel());
-        tblsanpham.setRowSorter(sorterSP);
-        txttimkiemsp.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+        tblsanpham.setRowSorter(sorterSP); // gắn sorter vào bảng
+        txttimkiemsp.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {//DocumentListener lắng nghe mọi thay đổi trong ô text
         @Override
         public void insertUpdate(javax.swing.event.DocumentEvent e) { filter(); }
         @Override
@@ -69,6 +67,7 @@ public class quanlysanpham extends javax.swing.JPanel {
         loadSP();
     }
     
+    //lấy loại sản phẩm cho vào combobox loại sp bên mục sản phẩm
     private void cbloaiSP() throws SQLException{
         cbloaisp.removeAllItems();
         loaisanphamDAO dao=new loaisanphamDAO(dbconnection.getConnection());
@@ -76,9 +75,10 @@ public class quanlysanpham extends javax.swing.JPanel {
         for(loaisanpham loai:listcb){
             cbloaisp.addItem(loai);
         }
-        AutoCompleteDecorator.decorate(cbloaisp);
+        AutoCompleteDecorator.decorate(cbloaisp);//là hàm dùng để bật chức năng gợi ý autocomplete cho combobox trong thư viện swingx
     }
     
+    //hàm cho vào bảng của loại sản phẩm
     private void loadLoaiSP() throws SQLException {
         loaisanphamDAO dao= new loaisanphamDAO(dbconnection.getConnection());
         List<loaisanpham> list=dao.getAll();
@@ -93,6 +93,7 @@ public class quanlysanpham extends javax.swing.JPanel {
         }
     }
     
+    //hàm cho vào jtable của sản phẩm
     private void loadSP() throws SQLException {
         sanphamDAO dao= new sanphamDAO(dbconnection.getConnection());
         List<sanpham> list=dao.getAll();
@@ -110,7 +111,7 @@ public class quanlysanpham extends javax.swing.JPanel {
             });
         }
     }
-    
+    //hàm xóa text
     private void clear() {
         txtmasp.setText("");
         txttensp.setText("");
@@ -465,11 +466,14 @@ public class quanlysanpham extends javax.swing.JPanel {
             .addComponent(panelRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
+    //nút thêm của loại sản phẩm
     private void btnthemloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemloaiActionPerformed
+        //lấy thông tin từ đoạn txt nhập vào 
         String maloai = txtmaloai.getText();
         String tenloai = txttenloai.getText();
         String mota =txtmota.getText();
+        
+        //Tạo những thông báo validate những thông tin lấy từ txt, sử dụng hàm validate của Validate packet
         StringBuilder errors = new StringBuilder();
         if (validate.isEmpty(maloai)) {
             errors.append("- Mã loại sản phẩm không được để trống.\n");
@@ -482,11 +486,13 @@ public class quanlysanpham extends javax.swing.JPanel {
             errors.append("- Tên loại sản phẩm không được để trống.\n");
         }
         
+        //tạo 1 loaisp để lưu thông tin nhập vào
         int Maloai=Integer.parseInt(maloai);
         loaisanpham loaisp= new loaisanpham();
         loaisp.setMaloai(Maloai);
         loaisp.setTenloai(tenloai);
         loaisp.setMota(mota);
+        //tạo connection và thêm vào db
         loaisanphamDAO loaiDAO=new loaisanphamDAO(dbconnection.getConnection());
         try{
             if(loaiDAO.isMaLoai(Maloai)){
@@ -512,11 +518,12 @@ public class quanlysanpham extends javax.swing.JPanel {
     }//GEN-LAST:event_btnthemloaiActionPerformed
 
     private void btnsualoaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsualoaiActionPerformed
+        //lấy thông tin của hàng được select trong table
         int row=tblloaisp.getSelectedRow();
         String maloai=txtmaloai.getText().trim();
         String tenloai=txttenloai.getText().trim();
         String mota=txtmota.getText().trim();
-        
+        //validate thông tin
         if (maloai.isEmpty() || tenloai.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng không để trống mã loại và tên loại!");
             return;
@@ -526,7 +533,7 @@ public class quanlysanpham extends javax.swing.JPanel {
             return;
         }
         else{
-            try{
+            try{//tạo kết nối và update những thông tin được sửa
                 loaisanpham sp=new loaisanpham();
                 sp.setMaloai(Integer.parseInt(maloai));
                 sp.setTenloai(tenloai);
@@ -559,6 +566,7 @@ public class quanlysanpham extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnsualoaiActionPerformed
 
+    //hàm sự kiện click vào bảng loại sản phẩm để sử dụng trong chức năng sửa
     private void tblloaispMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblloaispMouseClicked
         int row= tblloaisp.getSelectedRow();
         if(row>=0){
@@ -569,18 +577,22 @@ public class quanlysanpham extends javax.swing.JPanel {
         txtmaloai.setEnabled(false);
     }//GEN-LAST:event_tblloaispMouseClicked
 
+    //nút xóa
     private void btnxoaloaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoaloaiActionPerformed
+        //chọn được nhiều hàng
         int[] selectedRows= tblloaisp.getSelectedRows();
         if(selectedRows.length==0){
             JOptionPane.showMessageDialog(this, "Hãy chọn 1 loại sản phẩm để xóa");
             return;
         }
+        //tạo 1 list chứa mã loại của nhiều hàng được chọn
         List<Integer> listmaloai= new ArrayList<>();
         for(int row : selectedRows){
             int maloai=(int) tblloaisp.getValueAt(row, 0);
             listmaloai.add(maloai);
         }
         try{
+            //gọi hàm xóa sản phẩm
             loaisanphamDAO loaidao=new loaisanphamDAO(dbconnection.getConnection());
             boolean ok=loaidao.xoaNhieuLoaiSanPham(listmaloai);
             if(ok){
@@ -616,12 +628,14 @@ public class quanlysanpham extends javax.swing.JPanel {
     }//GEN-LAST:event_txttenspActionPerformed
 
     private void btnthemspActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemspActionPerformed
+        //lấy thông tin được nhập vào
         String masptext=txtmasp.getText();
         String tensptext=txttensp.getText();
-        loaisanpham loaisp= (loaisanpham) cbloaisp.getSelectedItem();
+        loaisanpham loaisp= (loaisanpham) cbloaisp.getSelectedItem(); //lấy đối tượng loại sản phẩm từ combobox
         String soluongtext=txtsoluongton.getText();
         String giabantext=txtgiaban.getText();
         String gianhaptext=txtgianhap.getText();
+        //validate thông tin được nhập
         if (validate.isEmpty(masptext) || !validate.isPositiveInteger(masptext)) {
             JOptionPane.showMessageDialog(this, "Mã sản phẩm phải là số nguyên dương!");
             return;
@@ -675,13 +689,12 @@ public class quanlysanpham extends javax.swing.JPanel {
             return;
         }
         int masp = Integer.parseInt(masptext);
-        int soluong = Integer.parseInt(soluongtext);
-        
-        int maloai=loaisp.getMaloai();
+        int soluong = Integer.parseInt(soluongtext);      
+        int maloai=loaisp.getMaloai();//lấy mã loại từ đối tượng loại sản phẩm trong combobox (loaisp chứa mã sản phẩm và tên sản phẩm)
         double gianhap = Double.parseDouble(gianhaptext);
         double giaban = Double.parseDouble(giabantext);
         String tensp = tensptext;
-
+        // tạo đối tượng sản phẩm để lưu thuộc tính và thêm vào db
         sanpham sp=new sanpham();
         sp.setMasp(masp);
         sp.setTensp(tensp);

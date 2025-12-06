@@ -4,7 +4,6 @@
  */
 package GUI;
 
-import DAO.chitietphieunhapDAO;
 import DAO.nhacungcapDAO;
 import DAO.nhanvienDAO;
 import DAO.sanphamDAO;
@@ -13,16 +12,12 @@ import Models.nhanvienComboBox;
 import Models.nhacungcapComboBox;
 import database.dbconnection;
 import java.awt.CardLayout;
-import java.awt.Dimension;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.LookAndFeel;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -32,11 +27,7 @@ import DAO.phieunhapDAO;
 import Models.chitietphieu;
 import Models.phieunhap;
 import Models.taikhoan;
-import java.awt.Component;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import servicesANDvalidate.services;
 
 /**
@@ -44,21 +35,18 @@ import servicesANDvalidate.services;
  * @author Admin
  */
 public class mainmenu extends javax.swing.JFrame {
-    private taikhoan currentUser;
+    private taikhoan currentUser; //biến lưu thông tin người sử dụng trong tài khoản
     /**
      * Creates new form mainmenu
      */
     public mainmenu() throws SQLException {
         initComponents();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        mainPanel.setPreferredSize(new Dimension(1280, 720));
-        mainPanel.setMaximumSize(new Dimension(1280, 720));
-        mainPanel.setMinimumSize(new Dimension(1280, 720));
-        jPanel3.setLayout(new java.awt.CardLayout());
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);//full màn hình
+        jPanel3.setLayout(new java.awt.CardLayout());//set cardlayout để các panel có thể chồng lên nhau
         jPanel3.add(panelphieunhap, "PHIEU_NHAP");
         jPanel3.add(jPanel4, "SAN PHAM");
         CardLayout cl = (CardLayout) (jPanel3.getLayout());
-        cl.show(jPanel3, "SAN PHAM");
+        cl.show(jPanel3, "SAN PHAM");//luôn show jpanel3(màn hình chính) khi bắt đầu chạy
         cbsanpham.setEditable(true);
         loadSanPham();
         cbnhanvien.setEditable(true);
@@ -101,14 +89,16 @@ public class mainmenu extends javax.swing.JFrame {
                     // Chỉ hiện các chức năng liên quan đến bán hàng
                     btnphieunhap.setVisible(false);
                     btnphieuxuat.setVisible(false);
-
+                    btnnhasanxuat.setVisible(false);
+                    btndonvi.setVisible(false);
                     btnnhanvien.setVisible(false);
                     break;
 
                 case "Nhân viên kho":
                     // Chỉ hiện các chức năng liên quan đến kho
-                    btnhoadon.setVisible(false);
                     btnnhanvien.setVisible(false);
+                    btnnhasanxuat.setVisible(false);
+                    btndonvi.setVisible(false);
                     break;
 
                 case "Quản lý":
@@ -122,6 +112,8 @@ public class mainmenu extends javax.swing.JFrame {
         }
     }
     
+    
+    //hàm load combobox cho việc thêm sản phẩm vào chi tiết phiếu nhập
     private void loadSanPham(){
         cbsanpham.removeAllItems();
         sanphamDAO spDAO=new sanphamDAO(dbconnection.getConnection());
@@ -129,9 +121,9 @@ public class mainmenu extends javax.swing.JFrame {
         for (goiysanpham p : listGoiY) {
             cbsanpham.addItem(p);
         }
-        AutoCompleteDecorator.decorate(cbsanpham);
+        AutoCompleteDecorator.decorate(cbsanpham);//là hàm dùng để bật chức năng gợi ý autocomplete cho combobox trong thư viện swingx
     }
-    
+    //hàm load combobox cho việc chọn nhân viên 
     private void loadnhanvien() throws SQLException{
         cbnhanvien.removeAllItems();
         nhanvienDAO nvDAO=new nhanvienDAO(dbconnection.getConnection());
@@ -141,7 +133,7 @@ public class mainmenu extends javax.swing.JFrame {
         }
         AutoCompleteDecorator.decorate(cbnhanvien);
     }
-    
+    //hàm load combobox cho việc chọn nhà cung cấp
     private void loadnhacungcap() throws SQLException{
         cbnhacungcap.removeAllItems();
         nhacungcapDAO nccDAO=new nhacungcapDAO(dbconnection.getConnection());
@@ -166,6 +158,7 @@ public class mainmenu extends javax.swing.JFrame {
         txtdatechooser.setEnabled(true);
     }
     
+    //hàm tính tổng tiền của phiếu nhập = tổng tiền tiền của các sản phẩm trong chi tiết phiếu
     private double tinhTongTienTable() {
         DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
         double tong = 0;
@@ -178,6 +171,7 @@ public class mainmenu extends javax.swing.JFrame {
         return tong;
     }
     
+    //lấy thông tin từ db và hiển thị danh sách phiếu nhập trong JTable
     private void loadPhieuNhap() throws SQLException{
         phieunhapDAO phieunhapdao=new phieunhapDAO(dbconnection.getConnection());
         List<phieunhap> list = phieunhapdao.getAll();
@@ -701,11 +695,13 @@ public class mainmenu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //nút hiển thị chức năng phiếu nhập
     private void btnphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapActionPerformed
         CardLayout cl = (CardLayout)(jPanel3.getLayout());
         cl.show(jPanel3, "PHIEU_NHAP");
     }//GEN-LAST:event_btnphieunhapActionPerformed
-
+    
+    //chức năng quản lý sản phẩm
     private void btnsanphamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsanphamActionPerformed
         CardLayout cl = (CardLayout) jPanel3.getLayout();
         try {
@@ -716,6 +712,7 @@ public class mainmenu extends javax.swing.JFrame {
         cl.show(jPanel3, "quản lý sản phẩm");
     }//GEN-LAST:event_btnsanphamActionPerformed
 
+    //chức năng quản lý đơn vị vận chuyển
     private void btndonviActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndonviActionPerformed
         CardLayout cl = (CardLayout) jPanel3.getLayout();
         try {
@@ -726,13 +723,14 @@ public class mainmenu extends javax.swing.JFrame {
         cl.show(jPanel3, "quản lý đơn vị vận chuyển");
     }//GEN-LAST:event_btndonviActionPerformed
 
+    //hàm nút thêm phiếu nhập tạo ra 1 JDialog để nhập chi tiết phiếu nhập
     private void btnthemphieunhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemphieunhapActionPerformed
-        if (themchitietphieu == null || !themchitietphieu.isDisplayable()) {
+        if (themchitietphieu == null || !themchitietphieu.isDisplayable()) { //nếu JDialog bị đóng
             themchitietphieu = new JDialog(this, "Thêm phiếu nhập", true);
-            themchitietphieu.getContentPane().add(pnchitietphieu);
-            themchitietphieu.pack();
-            themchitietphieu.setLocationRelativeTo(this);
-            themchitietphieu.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            themchitietphieu.getContentPane().add(pnchitietphieu); //thêm panel của chi tiết phiếu nhập
+            themchitietphieu.pack();//tự cân kích thức theo nội dung
+            themchitietphieu.setLocationRelativeTo(this);//mở dialog nằm giữa form.
+            themchitietphieu.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);//đóng dialog thì giải phóng tài nguyên.
         }
         
         Abled();
@@ -747,24 +745,27 @@ public class mainmenu extends javax.swing.JFrame {
     }//GEN-LAST:event_btnthemphieunhapActionPerformed
 
     private void btnphieunhapluuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapluuActionPerformed
+        //lấy thông tin được nhập trong chi tiết phiếu nhập
         String maphieuText = txtmaphieunhap.getText().trim();
         int maphieu = Integer.parseInt(maphieuText);
-        java.util.Date utilDate = txtdatechooser.getDate();
-        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-        nhanvienComboBox nv= (nhanvienComboBox) cbnhanvien.getSelectedItem();
+        java.util.Date utilDate = txtdatechooser.getDate();// lấy date của datechooser
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());//ép kiểu date của datechooser về kiểu của sql để lưu vào db
+        nhanvienComboBox nv= (nhanvienComboBox) cbnhanvien.getSelectedItem();//combobox chưa đối tượng nhân viên có 2 thuộc tính mã và tên
         int manv = nv.getManv();
         nhacungcapComboBox ncc= (nhacungcapComboBox) cbnhacungcap.getSelectedItem();
         int mancc = ncc.getId();
-        double tongtien = tinhTongTienTable();
+        double tongtien = tinhTongTienTable();//lấy tổng tiền từ hàm tính tổng ở trên
+        
+        //tạo connect với db và lưu phiếu nhập
         chitietphieunhapDAO chitietphieuDAO=new chitietphieunhapDAO(dbconnection.getConnection());
         phieunhapDAO phieunhapDAO= new phieunhapDAO(dbconnection.getConnection());
         try{
-            if(chitietphieuDAO.isMaPhieuExit(maphieu)){
+            if(chitietphieuDAO.isMaPhieuExit(maphieu)){// kiểu tra phiếu nhập với chi tiết phiếu nhập đã tồn tại
                 JOptionPane.showMessageDialog(this, "Mã phiếu đã tồn tại trong cơ sở dữ liệu!");
                 return;
             }
             else if(!chitietphieuDAO.isMaPhieuExit(maphieu)){
-                boolean them=phieunhapDAO.themPhieuNhap(maphieu, sqlDate , manv, mancc, tongtien);
+                boolean them=phieunhapDAO.themPhieuNhap(maphieu, sqlDate , manv, mancc, tongtien);//hàm thêm phiếu nhập
                 if(them){
                     JOptionPane.showMessageDialog(this, "Thêm phiếu nhập thành công!");
                 }
@@ -775,7 +776,7 @@ public class mainmenu extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        //tạo connect với db và lưu thông tin chi tiết phiếu nhập
         DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
         sanphamDAO spDAO = new sanphamDAO(dbconnection.getConnection());
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -800,11 +801,13 @@ public class mainmenu extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnphieunhapluuActionPerformed
 
+    //nút thêm sản phẩm trong chi tiết phiếu nhập
     private void btnphieunhapthemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnphieunhapthemActionPerformed
+        //lấy thông tin sản phẩm được nhập
         String maphieuText = txtmaphieunhap.getText().trim();
         String soluongText = txtphieunhapsoluong.getText().trim();
         goiysanpham sp = (goiysanpham) cbsanpham.getSelectedItem();
-        
+        //tạo các thông báo lỗi validate
         StringBuilder errors = new StringBuilder();
         if (validate.isEmpty(maphieuText)) {
             errors.append("- Mã phiếu không được để trống.\n");
@@ -842,6 +845,8 @@ public class mainmenu extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(mainmenu.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        //thêm vào JTable chi tiết phiếu xuất các sản phẩm
         int soluong = Integer.parseInt(soluongText);
         int masp = sp.getId();
         String tensp = sp.getName();
@@ -910,7 +915,7 @@ public class mainmenu extends javax.swing.JFrame {
                 break;
             }
         }
-        
+        //truy cập db lấy thông tin bảng chi tiết phiếu nhập
         DefaultTableModel model = (DefaultTableModel) tbchitietphieunhap.getModel();
         model.setRowCount(0);
         chitietphieunhapDAO dao= new chitietphieunhapDAO(dbconnection.getConnection());

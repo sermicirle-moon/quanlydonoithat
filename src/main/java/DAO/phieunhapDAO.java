@@ -4,14 +4,11 @@
  */
 package DAO;
 
-import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import Models.phieunhap;
-import Models.sanpham;
 import database.dbconnection;
 import java.sql.ResultSet;
 import java.sql.Statement;

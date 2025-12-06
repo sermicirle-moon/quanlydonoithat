@@ -24,7 +24,7 @@ public class loaisanphamDAO {
         this.conn = conn;
     }
 
-    // 1. Lấy tất cả loại sản phẩm
+    // lấy tất cả loại sản phẩm
     public List<loaisanpham> getAll() throws SQLException {
         List<loaisanpham> list = new ArrayList<>();
         String sql = "SELECT * FROM loaisanpham";
@@ -45,7 +45,7 @@ public class loaisanphamDAO {
         return list;
     }
 
-    // 2. Thêm loại sản phẩm mới
+    // thêm sản phẩm mới
     public boolean insert(loaisanpham lsp) throws SQLException {
         String sql = "INSERT INTO loaisanpham(maloai, tenloai, mota) VALUES (?, ?, ?)";
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -58,7 +58,7 @@ public class loaisanphamDAO {
         return row > 0;
     }
 
-    // 3. Cập nhật loại sản phẩm
+    //Cập nhật loại sản phẩm
     public boolean update(loaisanpham lsp) throws SQLException {
         String sql = "UPDATE loaisanpham SET tenloai=?, mota=? WHERE maLoai=?";
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -70,7 +70,7 @@ public class loaisanphamDAO {
         return row > 0;
     }
 
-    // 4. Xóa loại sản phẩm
+    //Xóa loại sản phẩm
     public boolean delete(String maLoai) throws SQLException {
         String sql = "DELETE FROM loaiSanPham WHERE maLoai=?";
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -81,7 +81,7 @@ public class loaisanphamDAO {
         return row > 0;
     }
 
-    // 5. Tìm theo mã loại
+    //Tìm theo mã loại
     public loaisanpham findById(String maLoai) throws SQLException {
         String sql = "SELECT * FROM LoaiSanPham WHERE MaLoai=?";
         PreparedStatement pst = conn.prepareStatement(sql);
@@ -102,6 +102,7 @@ public class loaisanphamDAO {
         return lsp;
     }
     
+    //đếm nếu mã loại tồn tại
     public boolean isMaLoai(int Maloai) throws SQLException{
         String sql="select count(*) from loaisanpham where maloai=?";
         PreparedStatement ps=conn.prepareStatement(sql);

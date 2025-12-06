@@ -25,7 +25,7 @@ public class sanphamDAO {
         this.conn = conn;
     }
 
-    // 1. Lấy tất cả sản phẩm
+    //Lấy tất cả sản phẩm
     public List<sanpham> getAll() throws SQLException {
         List<sanpham> list = new ArrayList<>();
             String sql = """
@@ -56,7 +56,7 @@ public class sanphamDAO {
         return list;
     }
 
-    // 2. Thêm sản phẩm
+    //Thêm sản phẩm
     public boolean insert(sanpham sp) throws SQLException {
         String sql = "INSERT INTO sanpham(masp, tensp, maloai, soluong, giaban, gianhap) VALUES(?,?,?,?,?,?)";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -71,7 +71,7 @@ public class sanphamDAO {
         return row > 0;
     }
 
-    // 3. Cập nhật sản phẩm
+    //Cập nhật sản phẩm
     public boolean update(sanpham sp) throws SQLException {
         String sql = "UPDATE sanpham SET tensp=?, maloai=?, soluong=?, giaban=?, gianhap=? WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -87,7 +87,7 @@ public class sanphamDAO {
         return row > 0;
     }
 
-    // 4. Xóa sản phẩm theo masp
+    //Xóa sản phẩm theo masp
     public boolean delete(int masp) throws SQLException {
         String sql = "DELETE FROM sanpham WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -98,7 +98,7 @@ public class sanphamDAO {
         return row > 0;
     }
 
-    // 5. Tìm sản phẩm theo masp
+    //Tìm sản phẩm theo masp
     public sanpham findById(int masp) throws SQLException {
         String sql = "SELECT * FROM sanpham WHERE masp=?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -122,6 +122,7 @@ public class sanphamDAO {
         return sp;
     }
     
+    //hàm hiển thị gợi ý tên sản phẩm trong lúc thêm sản phẩm
     public List<goiysanpham> getAllForComboBox() {
         List<goiysanpham> list = new ArrayList<>();
         String sql = "SELECT masp, tensp, gianhap FROM sanpham ORDER BY tensp";
@@ -142,6 +143,7 @@ public class sanphamDAO {
         return list;
     }
     
+    //kiểm tra xem mã sản phẩm đã tồn tại
     public boolean isMaspExist(int masp) {
         String sql = "SELECT COUNT(*) AS count FROM sanpham WHERE masp = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -179,6 +181,7 @@ public class sanphamDAO {
         return AllDeleted;
     }
     
+    //hàm cộng số lượng khi thêm hàng trong phiếu nhập
     public boolean congSoLuong(int masp, int soluong) throws SQLException {
         String sql = "UPDATE sanpham SET soluong = soluong + ? WHERE masp = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -187,6 +190,7 @@ public class sanphamDAO {
         return ps.executeUpdate() > 0;
     }
     
+    //hàm trừ số lượng khi trong hóa đơn và phiếu xuất
     public boolean truSoLuong(int masp, int soluong) throws SQLException {
         String sql = "UPDATE sanpham SET soluong = soluong - ? WHERE masp = ? AND soluong >= ?";
         PreparedStatement ps = conn.prepareStatement(sql);
@@ -196,6 +200,7 @@ public class sanphamDAO {
         return ps.executeUpdate() > 0;
     }
     
+    //Tìm sản phẩm theo tên
     public goiysanpham getByName(String tensp) throws SQLException {
         String sql = "SELECT * FROM sanpham WHERE tensp = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -203,13 +208,13 @@ public class sanphamDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     goiysanpham sp= new goiysanpham();
-                    sp.setId(rs.getInt("masp"));       // cột id
-                    sp.setName(rs.getString("tensp")); // cột tên
-                    sp.setDongia(rs.getDouble("giaban")); // cột giá nếu có
+                    sp.setId(rs.getInt("masp"));       
+                    sp.setName(rs.getString("tensp")); 
+                    sp.setDongia(rs.getDouble("giaban"));
                     return sp;
                 }
             }
         }
-        return null; // không tìm thấy
+        return null;
     }
 }

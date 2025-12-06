@@ -8,18 +8,14 @@ import DAO.chitiethoadonDAO;
 import DAO.chitietphieuxuatDAO;
 import DAO.donvivanchuyenDAO;
 import DAO.hoadonDAO;
-import DAO.nhanvienDAO;
 import DAO.phieuxuatDAO;
 import DAO.phieuxuat_hoadonDAO;
-import DAO.sanphamDAO;
 import Models.chitiethoadon;
 import Models.chitietphieuxuat;
 import Models.donvivanchuyen;
 import Models.hoadon;
-import Models.nhanvienComboBox;
 import Models.phieuxuat;
 import database.dbconnection;
-import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
@@ -27,18 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.RowFilter;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -141,6 +129,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         btnhuyphieuxuat.addActionListener(e -> popupHuy.show(btnhuyphieuxuat, 0, btnhuyphieuxuat.getHeight()));
     }
     
+    //Event cho nút hủy phiếu xuất và hủy hóa đơn
     private void handleHuyHD(ActionEvent e) {
         int[] selectedRows = tblphieuxuat.getSelectedRows();
         if (selectedRows.length == 0) {
@@ -162,6 +151,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         }
     }
     
+    //Event hủy phiếu xuất nhưng trả lại trạng thái cho hóa đơn
     private void handleTraLaiHD(ActionEvent e) {
         int[] selectedRows = tblphieuxuat.getSelectedRows();
         if (selectedRows.length == 0) {
@@ -205,6 +195,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         tblhoadonPX.setEnabled(editable);
     }
     
+    //load hóa đơn vào bảng hóa đơn có trạng thái "Phiếu Xuất" để cho vào chi tiết hóa đơn
     private void loadHoaDon() throws SQLException{
         String trangthai="Phiếu Xuất";
         DefaultTableModel model = (DefaultTableModel) tblhoadonPX.getModel();
@@ -222,6 +213,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         }
     }
     
+    //Combobox đơn vị vận chuyển
     private void loaddvvc() throws SQLException{
         cbdvvc.removeAllItems();
         donvivanchuyenDAO dvvcDAO=new donvivanchuyenDAO(dbconnection.getConnection());
@@ -232,6 +224,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         AutoCompleteDecorator.decorate(cbdvvc);
     }
     
+    //load phiếu xuất vào table cửa phiếu xuất
     private void loadphieuxuat() throws SQLException{
         DefaultTableModel model = (DefaultTableModel) tblphieuxuat.getModel();
         model.setRowCount(0);
@@ -255,8 +248,8 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             chitietphieuxuatDAO ctpDAO = new chitietphieuxuatDAO(dbconnection.getConnection());
             phieuxuatDAO pxDAO = new phieuxuatDAO(dbconnection.getConnection());
 
-            // 1️⃣ Lấy thông tin phiếu xuất
-            phieuxuat px = pxDAO.getPhieuXuatById(mapx);
+            // Lấy thông tin phiếu xuât 
+            phieuxuat px = pxDAO.getPhieuXuatById(mapx);//phiếu xuất theo mã phiếu xuất đã chọn
             txtmapx.setText(String.valueOf(px.getMapx()));
             txtngayxuat.setDate(px.getNgayxuat());
             for (int i = 0; i < cbdvvc.getItemCount(); i++) {
@@ -266,7 +259,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 }
             }
 
-            // 2️⃣ Load bảng hóa đơn
+            //Load bảng hóa đơn
             DefaultTableModel modelHD = (DefaultTableModel) tblpx_hd.getModel();
             modelHD.setRowCount(0);
 
@@ -280,7 +273,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 });
             }
 
-            // 3️⃣ Load bảng sản phẩm
+            // Load bảng sản phẩm
             DefaultTableModel modelSP = (DefaultTableModel) tblspPX.getModel();
             modelSP.setRowCount(0);
 
@@ -610,51 +603,50 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
     }//GEN-LAST:event_btnthemphieuxuatActionPerformed
 
     private void btnthemchitietpxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemchitietpxActionPerformed
+        //select nhiều hóa đơn available
         int[] selectedRows = tblhoadonPX.getSelectedRows();
         if (selectedRows.length == 0) {
             JOptionPane.showMessageDialog(this, "Hãy chọn ít nhất 1 hóa đơn.");
             return;
         }
 
-        DefaultTableModel modelTren = (DefaultTableModel) tblhoadonPX.getModel();
+        DefaultTableModel modelTren = (DefaultTableModel) tblhoadonPX.getModel();// Bảng hóa đơn available
         DefaultTableModel modelDuoi = (DefaultTableModel) tblpx_hd.getModel(); // Bảng hóa đơn đã chọn
         DefaultTableModel modelChiTiet = (DefaultTableModel) tblspPX.getModel(); // Bảng chi tiết phiếu xuất
 
-        List<Integer> newlySelectedHD = new ArrayList<>();
-
-        // 1️⃣ Chuyển hóa đơn từ bảng trên xuống bảng dưới
+        // chuyển hóa đơn từ bảng trên xuống bảng dưới
         for (int i = selectedRows.length - 1; i >= 0; i--) {
             int viewRow = selectedRows[i];
-            int modelRow = tblhoadonPX.convertRowIndexToModel(viewRow); 
+            int modelRow = tblhoadonPX.convertRowIndexToModel(viewRow); //Chuyển chỉ số hàng ở giao diện (view index) sang chỉ số hàng ở model (model index).
+            //lấy các trường thông tin của Bảng Trên
             int maHD = (int) modelTren.getValueAt(modelRow, 0); 
             Object ngay = modelTren.getValueAt(modelRow, 1);
             Object tong = modelTren.getValueAt(modelRow, 2);
             Object makh = modelTren.getValueAt(modelRow, 4);
-            newlySelectedHD.add(maHD);
-            modelDuoi.addRow(new Object[]{ maHD, ngay, tong, makh });
-            modelTren.removeRow(modelRow);
+            modelDuoi.addRow(new Object[]{ maHD, ngay, tong, makh });//thêm thông tin vào bảng bên dưới
+            modelTren.removeRow(modelRow);//xóa đi thông tin đã thêm ở bảng bên trên
         }
 
-        // 2️⃣ Lấy tất cả mã hóa đơn hiện đang có trong bảng dưới
+        // Lấy mã hóa đơn ở bảng bên dưới
         List<Integer> allMaHD = new ArrayList<>();
         for (int i = 0; i < modelDuoi.getRowCount(); i++) {
             allMaHD.add((int) modelDuoi.getValueAt(i, 0));
         }
 
-        // 3️⃣ Lấy chi tiết tất cả hóa đơn → gộp SP trùng
+        // Lấy sản phẩm của các hóa đơn - cộng gộp với nhau nếu trùng
         try {
             chitiethoadonDAO ctDao = new chitiethoadonDAO(dbconnection.getConnection());
-            Map<Integer, chitiethoadon> mapCT = new HashMap<>();
+            Map<Integer, chitiethoadon> mapCT = new HashMap<>(); //hashmap  lưu <mã sản phẩm, sản phẩm trong chi tiết hóa đơn>
 
             for (int maHD : allMaHD) {
-                List<chitiethoadon> listCT = ctDao.getByMaHoaDon(maHD);
+                List<chitiethoadon> listCT = ctDao.getByMaHoaDon(maHD);// với những hóa đơn đã chọn lấy ra sản phẩm trong chi tiết hóa đơn
                 for (chitiethoadon ct : listCT) {
-                    int masp = ct.getMasp();
-                    if (mapCT.containsKey(masp)) {
+                    int masp = ct.getMasp();//lấy ra từng mã sản phẩm của list sản phẩm
+                    if (mapCT.containsKey(masp)) {//nếu mã sản phẩm đã tồn tại trong map
                         chitiethoadon exist = mapCT.get(masp);
-                        exist.setSoluong(exist.getSoluong() + ct.getSoluong());
-                        exist.setTongtien(exist.getTongtien() + ct.getTongtien());
-                    } else {
+                        exist.setSoluong(exist.getSoluong() + ct.getSoluong());//cộng số lượng
+                        exist.setTongtien(exist.getTongtien() + ct.getTongtien());//cộng tổng tiền
+                    } else {// nếu chưa xuất hiện sản phẩm thì thêm mới
                         mapCT.put(masp, new chitiethoadon(
                             ct.getMahoadon(),
                             ct.getMasp(),
@@ -666,7 +658,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 }
             }
 
-            // 4️⃣ Cập nhật bảng chi tiết sản phẩm
+            // cập nhật bảng chi tiết sản phẩm
             modelChiTiet.setRowCount(0);
             for (chitiethoadon ct : mapCT.values()) {
                 modelChiTiet.addRow(new Object[]{
