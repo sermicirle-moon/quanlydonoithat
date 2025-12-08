@@ -46,17 +46,17 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         initComponents();
         loadHoaDon();
         tblpx_hd.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+            new Object[][]{
             },
-            new String [] {
-                "mã hóa đơn", "ngày xuất", "tổng tiền", "mã khách hàng"
+            new String[]{
+                "mã hóa đơn","ngày xuất","tổng tiền","mã khách hàng"
             }
         ));
         tblspPX.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+            new Object[][]{
             },
-            new String [] {
-                "tên sản phẩm ", "số lượng", "tổng tiền"
+            new String[]{
+                "tên sản phẩm ","số lượng","tổng tiền"
             }
         ));
         txtngayxuat.setDate(new java.util.Date());
@@ -689,7 +689,6 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Hãy chọn ngày xuất!");
             return;
         }
-
         int mapx = Integer.parseInt(mapxText);
         java.sql.Date sqlDate = new java.sql.Date(ngayxuatText.getTime());
 
@@ -720,7 +719,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 return;
             }
 
-            // 1️⃣ Insert phiếu xuất với tổng tiền tạm 0
+            // Insert phiếu xuất
             phieuxuat px = new phieuxuat();
             px.setMapx(mapx);
             px.setNgayxuat(sqlDate);
@@ -728,10 +727,9 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             px.setTongtien(0);
             px.setTrangthai("Chờ duyệt");
             pxDAO.insertPhieuXuat(px);
-
+            
             double tongTienPX = 0;
-
-            // 2️⃣ Insert chi tiết phiếu xuất + phieuxuat_hoadon + cập nhật trạng thái hóa đơn
+            // Insert phiếu xuất + phiếu xuất_hóa đơn + chi tiết phiếu xuất
             for (int i = 0; i < modelDuoi.getRowCount(); i++) {
                 int maHD = (int) modelDuoi.getValueAt(i, 0);
 
@@ -751,19 +749,13 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 }
             }
 
-            // 3️⃣ Cập nhật tổng tiền phiếu xuất
+            // cập nhật tổng tiền phiếu xuất
             pxDAO.updateTongTien(mapx, tongTienPX);
-
-            // 4️⃣ Xóa bảng tạm
             modelDuoi.setRowCount(0);
             modelChiTiet.setRowCount(0);
-
             JOptionPane.showMessageDialog(this, "Lưu phiếu xuất thành công!");
-
-            // 5️⃣ Load lại bảng phiếu xuất nếu cần
             loadphieuxuat();
             Dialogchitietphieuxuat.dispose();
-
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi lưu phiếu xuất!");
@@ -771,49 +763,44 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
     }//GEN-LAST:event_btnluuchitietpxActionPerformed
 
     private void btnxoachitietpxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxoachitietpxActionPerformed
-
-        DefaultTableModel modelDuoi = (DefaultTableModel) tblpx_hd.getModel();
-        DefaultTableModel modelTren = (DefaultTableModel) tblhoadonPX.getModel();
-        DefaultTableModel modelChiTiet = (DefaultTableModel) tblspPX.getModel();
+        DefaultTableModel modelDuoi=(DefaultTableModel) tblpx_hd.getModel();
+        DefaultTableModel modelTren=(DefaultTableModel) tblhoadonPX.getModel();
+        DefaultTableModel modelChiTiet=(DefaultTableModel) tblspPX.getModel();
 
         int[] selectedRows = tblpx_hd.getSelectedRows();
         if (selectedRows.length == 0) {
             JOptionPane.showMessageDialog(this, "Hãy chọn ít nhất 1 hóa đơn để xóa.");
             return;
         }
-
         try {
-            // 1️⃣ Xóa các hóa đơn được chọn khỏi bảng dưới, đồng thời trả về bảng trên
-            for (int i = selectedRows.length - 1; i >= 0; i--) {
+            // Xóa hóa đơn ở bảng dưới thêm hóa đơn vào bảng trên
+            for (int i = selectedRows.length - 1; i >=0;i--) {
                 int row = selectedRows[i];
-                int maHD = (int) modelDuoi.getValueAt(row, 0);
-                Object ngay = modelDuoi.getValueAt(row, 1);
-                Object tong = modelDuoi.getValueAt(row, 2);
-                Object makh = modelDuoi.getValueAt(row, 3);
-
-                modelTren.addRow(new Object[]{ maHD, ngay, tong, "Phiếu Xuất", makh });
+                int maHD = (int) modelDuoi.getValueAt(row,0);
+                Object ngay= modelDuoi.getValueAt(row,1);
+                Object tong= modelDuoi.getValueAt(row,2);
+                Object makh= modelDuoi.getValueAt(row,3);
+                modelTren.addRow(new Object[]{maHD,ngay,tong,"Phiếu Xuất",makh });
                 modelDuoi.removeRow(row);
             }
-
-            // 2️⃣ Lấy tất cả hóa đơn còn lại trong bảng dưới
+            // Lấy hóa đơn của bảng dưới
             List<Integer> allMaHD = new ArrayList<>();
-            for (int i = 0; i < modelDuoi.getRowCount(); i++) {
-                allMaHD.add((int) modelDuoi.getValueAt(i, 0));
+            for (int i = 0;i<modelDuoi.getRowCount();i++) {
+                allMaHD.add((int) modelDuoi.getValueAt(i,0));
             }
 
-            // 3️⃣ Rebuild bảng chi tiết từ các hóa đơn còn lại
+            // Lấy sản phẩm từ những hóa đơn ở bảng dưới
             chitiethoadonDAO ctDao = new chitiethoadonDAO(dbconnection.getConnection());
-            Map<Integer, chitiethoadon> mapCT = new HashMap<>();
-
-            for (int maHD : allMaHD) {
-                List<chitiethoadon> listCT = ctDao.getByMaHoaDon(maHD);
-                for (chitiethoadon ct : listCT) {
-                    int masp = ct.getMasp();
+            Map<Integer, chitiethoadon> mapCT = new HashMap<>(); //map lưu thông tin <mã sản phẩm, chitiethoadon>
+            for(int maHD:allMaHD) {//duyệt qua các hóa đơn 
+                List<chitiethoadon> listCT=ctDao.getByMaHoaDon(maHD);// lấy list sản phẩm thông qua các hóa đơn
+                for (chitiethoadon ct:listCT) {
+                    int masp=ct.getMasp();// lấy mã sản phẩm trong list
                     if (mapCT.containsKey(masp)) {
-                        chitiethoadon exist = mapCT.get(masp);
-                        exist.setSoluong(exist.getSoluong() + ct.getSoluong());
-                        exist.setTongtien(exist.getTongtien() + ct.getTongtien());
-                    } else {
+                        chitiethoadon exist = mapCT.get(masp); //nếu đã tồn tại thì cộng số lượng và tong tien
+                        exist.setSoluong(exist.getSoluong()+ct.getSoluong());
+                        exist.setTongtien(exist.getTongtien()+ct.getTongtien());
+                    } else {//nếu chưa có thì tạo mới
                         mapCT.put(masp, new chitiethoadon(
                             ct.getMahoadon(),
                             ct.getMasp(),
@@ -825,10 +812,10 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
                 }
             }
 
-            // 4️⃣ Cập nhật lại bảng chi tiết
+            // cập nhật lại bảng chi tiết
             modelChiTiet.setRowCount(0);
-            for (chitiethoadon ct : mapCT.values()) {
-                modelChiTiet.addRow(new Object[]{ ct.getTensp(), ct.getSoluong(), ct.getTongtien() });
+            for (chitiethoadon ct:mapCT.values()) {
+                modelChiTiet.addRow(new Object[]{ ct.getTensp(),ct.getSoluong(),ct.getTongtien() });
             }
 
         } catch (SQLException ex) {
@@ -838,17 +825,17 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
     }//GEN-LAST:event_btnxoachitietpxActionPerformed
 
     private void btnxemphieuxuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxemphieuxuatActionPerformed
-        int selectedRow = tblphieuxuat.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Hãy chọn một phiếu xuất để xem!");
+        int selectedRow=tblphieuxuat.getSelectedRow();
+        if (selectedRow==-1) {
+            JOptionPane.showMessageDialog(this,"Hãy chọn một phiếu xuất để xem!");
             return;
         }
-        int mapx = (int) tblphieuxuat.getValueAt(selectedRow, 0);
+        int mapx =(int) tblphieuxuat.getValueAt(selectedRow, 0);
         xemPhieuXuat(mapx); 
         java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.width * 0.5);
-        int height = screenSize.height - 100;
-        Dialogchitietphieuxuat.setSize(width, height);
+        int width=(int) (screenSize.width * 0.5);
+        int height=screenSize.height - 100;
+        Dialogchitietphieuxuat.setSize(width,height);
         Dialogchitietphieuxuat.setLocationRelativeTo(null);
         Dialogchitietphieuxuat.setModal(true);
         setEditableForm(false);
@@ -864,23 +851,23 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
     }//GEN-LAST:event_btnhuyphieuxuatActionPerformed
 
     private void btndagiaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btndagiaoActionPerformed
-        int[] selectedRows = tblphieuxuat.getSelectedRows();
-        if (selectedRows.length == 0) {
+        int[] selectedRows=tblphieuxuat.getSelectedRows();
+        if (selectedRows.length==0) {
             JOptionPane.showMessageDialog(this, "Hãy chọn ít nhất 1 phiếu xuất.");
             return;
         }
 
         try {
             phieuxuatDAO dao= new phieuxuatDAO(dbconnection.getConnection());
-            for (int row : selectedRows) {
-                int mapx = (int) tblphieuxuat.getValueAt(row, 0);
+            for (int row:selectedRows) {
+                int mapx=(int) tblphieuxuat.getValueAt(row, 0);
                 dao.updatePhieuXuatAndHoaDon(mapx, "Đã Giao", "Đã Giao");
             }
             JOptionPane.showMessageDialog(this, "Giao phiếu xuất thành công");
             loadphieuxuat();
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Giao phiếu xuất thành công");
+            JOptionPane.showMessageDialog(this,"Giao phiếu xuất thành công");
         }
     }//GEN-LAST:event_btndagiaoActionPerformed
 
