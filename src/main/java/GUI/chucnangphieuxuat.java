@@ -63,8 +63,8 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
         cbdvvc.setEditable(true);
         loaddvvc();
         loadphieuxuat();
-        DefaultTableModel model = (DefaultTableModel) tblhoadonPX.getModel();
-        sorter = new TableRowSorter<>(model);
+        DefaultTableModel model=(DefaultTableModel) tblhoadonPX.getModel();
+        sorter=new TableRowSorter<>(model);
         tblhoadonPX.setRowSorter(sorter);
         txtthemhoadon.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
@@ -75,8 +75,8 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             public void changedUpdate(javax.swing.event.DocumentEvent e) { filter(); }
 
             private void filter() {
-                String text = txtthemhoadon.getText();
-                if (text.trim().length() == 0) {
+                String text=txtthemhoadon.getText();
+                if (text.trim().length()==0) {
                     sorter.setRowFilter(null);
                 } else {
                     sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
@@ -84,23 +84,23 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
             }
         });
         createPopupMenu();
-        DefaultTableModel phieuxuatmodel = (DefaultTableModel) tblphieuxuat.getModel();
-        sorterPX = new TableRowSorter<>(phieuxuatmodel);
+        DefaultTableModel phieuxuatmodel=(DefaultTableModel) tblphieuxuat.getModel();
+        sorterPX=new TableRowSorter<>(phieuxuatmodel);
         tblphieuxuat.setRowSorter(sorterPX);
         txttimkiempx.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             @Override
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            public void insertUpdate(javax.swing.event.DocumentEvent e){ filter(); }
             @Override
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            public void removeUpdate(javax.swing.event.DocumentEvent e){ filter(); }
             @Override
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { filter(); }
+            public void changedUpdate(javax.swing.event.DocumentEvent e){ filter(); }
 
             private void filter() {
-                String text = txttimkiempx.getText();
-                if (text.trim().length() == 0) {
+                String text=txttimkiempx.getText();
+                if (text.trim().length()==0) {
                     sorterPX.setRowFilter(null);
                 } else {
-                    sorterPX.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    sorterPX.setRowFilter(RowFilter.regexFilter("(?i)"+text));
                 }
             }
         });
@@ -108,39 +108,37 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
     
     private void createPopupMenu() {
         // Tạo popup menu
-        JPopupMenu popupHuy = new JPopupMenu();
+        JPopupMenu popupHuy=new JPopupMenu();
         popupHuy.setLayout(new GridLayout(0, 1));
 
         // Nút 1: Hủy hóa đơn
-        JButton btnHuyHD = new JButton("Hủy hóa đơn");
+        JButton btnHuyHD=new JButton("Hủy hóa đơn");
         popupHuy.add(btnHuyHD);
 
         // Nút 2: Trả lại hóa đơn
         JButton btnTraLaiHD = new JButton("Trả lại hóa đơn");
         popupHuy.add(btnTraLaiHD);
-        
         btnHuyHD.addActionListener(this::handleHuyHD);
         btnTraLaiHD.addActionListener(this::handleTraLaiHD);
-
         popupHuy.add(btnHuyHD);
         popupHuy.add(btnTraLaiHD);
 
         // Hiển thị popup khi click nút
-        btnhuyphieuxuat.addActionListener(e -> popupHuy.show(btnhuyphieuxuat, 0, btnhuyphieuxuat.getHeight()));
+        btnhuyphieuxuat.addActionListener(e -> popupHuy.show(btnhuyphieuxuat,0,btnhuyphieuxuat.getHeight()));
     }
     
     //Event cho nút hủy phiếu xuất và hủy hóa đơn
     private void handleHuyHD(ActionEvent e) {
         int[] selectedRows = tblphieuxuat.getSelectedRows();
-        if (selectedRows.length == 0) {
+        if (selectedRows.length==0) {
             JOptionPane.showMessageDialog(this, "Hãy chọn ít nhất 1 phiếu xuất.");
             return;
         }
 
         try {
-            phieuxuatDAO dao= new phieuxuatDAO(dbconnection.getConnection());
-            for (int row : selectedRows) {
-                int mapx = (int) tblphieuxuat.getValueAt(row, 0);
+            phieuxuatDAO dao=new phieuxuatDAO(dbconnection.getConnection());
+            for (int row:selectedRows) {
+                int mapx=(int) tblphieuxuat.getValueAt(row, 0);
                 dao.updatePhieuXuatAndHoaDon(mapx, "Hủy", "Hủy");              
             }
             JOptionPane.showMessageDialog(this, "Hủy phiếu xuất thành công!");
@@ -153,7 +151,7 @@ public class chucnangphieuxuat extends javax.swing.JPanel {
     
     //Event hủy phiếu xuất nhưng trả lại trạng thái cho hóa đơn
     private void handleTraLaiHD(ActionEvent e) {
-        int[] selectedRows = tblphieuxuat.getSelectedRows();
+        int[] selectedRows=tblphieuxuat.getSelectedRows();
         if (selectedRows.length == 0) {
             JOptionPane.showMessageDialog(this, "Hãy chọn ít nhất 1 phiếu xuất.");
             return;
